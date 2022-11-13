@@ -18,7 +18,6 @@ void gotoSleepNow()
 
     i2cStart();
     // disconnect WiFi as it's no longer needed
-    mqttStopTask(); // prevent i2c lock in main thread
     wifiStopTask(); // prevent i2c lock in main thread
 
     // set MCP interrupts
@@ -64,16 +63,7 @@ void checkSleep(void *parameter)
             vTaskDelay(SECOND / portTICK_PERIOD_MS);
         }
 
-        // wait for mqtt messages to send
-        // only check if both wifi and mqtt did not fail
-        if (!getWifIFailed() && !getMQTTFailed() && mqttRunning())
-        {
-            Serial.printf("[SLEEP] waiting on MQTT..\n");
-            vTaskDelay(2 * SECOND / portTICK_PERIOD_MS);
-            continue; // reset waiting
-        }
-
-        startActivity(NONE);
+         startActivity(NONE);
         waitForOTA(); // dont sleep if there is an OTA being performed
         printDebugStackSpace();
         // i2cStart();

@@ -103,9 +103,6 @@ void setup()
     Serial.println("[SETUP] starting OTA task");
     startOTATask();
 
-    Serial.println("[SETUP] starting MQTT task");
-    startMQTTTask();
-
     Serial.println("[SETUP] starting sleep task");
     sleepTask();
 

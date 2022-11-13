@@ -209,19 +209,6 @@ void displayInfoScreen()
   display.setCursor(COL2_DATA_X, y);
   display.printf(wl_status_to_string(WiFi.status()));
 
-  // MQTT server
-  y += lineHeight * 2;
-  display.setCursor(COL2_NAME_X, y);
-  display.printf("MQTT Server:");
-  display.setCursor(COL2_DATA_X, y);
-  display.printf(MQTT_HOST);
-  // MQTT status
-  y += lineHeight;
-  display.setCursor(COL2_NAME_X, y);
-  display.printf("MQTT Status:");
-  display.setCursor(COL2_DATA_X, y);
-  display.printf(mqttConnected() ? "OK" : "Error");
-
   // time
   y += lineHeight * 2;
   display.setCursor(COL2_NAME_X, y);

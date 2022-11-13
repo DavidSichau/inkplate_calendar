@@ -16,4 +16,8 @@
         "functional": "cpp",
         "system_error": "cpp"
     },
+    "editor.fontSize": 16,
+    "scm.inputFontSize": 15,
+    "debug.console.fontSize": 16,
+    "terminal.integrated.fontSize": 16,
 }

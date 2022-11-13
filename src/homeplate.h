@@ -84,17 +84,6 @@ bool getNTPSynced();
 char *timeString();
 char *fullDateString();
 
-// MQTT
-void startMQTTTask();
-bool getMQTTFailed();
-bool mqttConnected();
-void mqttStopTask();
-void waitForMQTT();
-void sendMQTTStatus();
-bool mqttRunning();
-void sendMQTTStatus();
-void startMQTTStatusTask();
-
 // OTA
 void startOTATask();
 void waitForOTA();
@@ -108,10 +97,6 @@ void printDebugStackSpace();
 void displayBatteryWarning();
 void printDebug(const char *s);
 
-// message
-void setMessage(const char *m);
-void displayMessage(const char * = NULL);
-const char* getMessage();
 
 // activity
 enum Activity
@@ -154,18 +139,9 @@ void delaySleep(uint seconds);
 // input debounce
 #define DEBOUNCE_DELAY_MS (SECOND / 2)
 
-// MQTT message sizes
-#define MESSAGE_BUFFER_SIZE 2048
-
 // debug settings
 #define DEBUG_STACK false
 #define DEBUG_PRINT false
-
-// MQTT
-#define MQTT_TIMEOUT_MS (20 * SECOND)      // 20 second MQTT connection timeout
-#define MQTT_RECOVER_TIME_MS (30 * SECOND) // Wait 30 seconds after a failed connection attempt
-#define MQTT_RESEND_CONFIG_EVERY 10
-#define MQTT_RETAIN_SENSOR_VALUE true
 
 // Sleep
 #define SLEEP_TIMEOUT_SEC 15

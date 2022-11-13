@@ -84,7 +84,7 @@ void lowBatteryCheck()
     {
         Serial.printf("[MAIN] voltage %.2f <= min %.2f, powering down\n", voltage, BATTERY_VOLTAGE_WARNING_SLEEP);
         displayStatusMessage("Low Battery");
-        // TODO mqtt send low battery sleep notification
+
         setSleepDuration(0xFFFFFFFF);
         gotoSleepNow();
     }

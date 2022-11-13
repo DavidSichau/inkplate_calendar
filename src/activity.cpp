@@ -110,10 +110,6 @@ void runActivities(void *params)
             setSleepDuration(TIME_TO_QUICK_SLEEP_SEC);
             displayInfoScreen();
             break;
-        case Message:
-            setSleepDuration(TIME_TO_SLEEP_SEC);
-            displayMessage();
-            break;
         case IMG:
             setSleepDuration(TIME_TO_SLEEP_SEC);
             waitForWiFiOrActivityChange();
@@ -124,7 +120,7 @@ void runActivities(void *params)
             }
             // get & render hass image
             delaySleep(20);
-            remotePNG(getMessage());
+            remotePNG("TOTO");
             break;
         default:
             Serial.printf("[ACTIVITY][ERROR] runActivities() unhandled Activity: %d\n", activityNext);
@@ -132,17 +128,11 @@ void runActivities(void *params)
         activityCurrent = activityNext;
         // check and display a low battery warning if needed
         displayBatteryWarning();
-
-        // send new MQTT status
-        sendMQTTStatus();
     }
 }
 
 void startActivitiesTask()
 {
-    // start the main loop stuff
-    startMQTTStatusTask();
-
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
