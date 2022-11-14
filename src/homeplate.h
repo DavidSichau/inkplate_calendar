@@ -141,7 +141,7 @@ void delaySleep(uint seconds);
 
 // debug settings
 #define DEBUG_STACK false
-#define DEBUG_PRINT false
+#define DEBUG_PRINT true
 
 // Sleep
 #define SLEEP_TIMEOUT_SEC 15

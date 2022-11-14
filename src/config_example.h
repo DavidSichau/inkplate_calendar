@@ -25,6 +25,12 @@
 #define QR_WIFI_NAME "Guest WiFi Network Name"
 #define QR_WIFI_PASSWORD "Guest WiFi Password"
 
+//OpenWeatherMap
+#define OPEN_WEATHER_MAP_LANGUAGE "en"
+#define OPEN_WEATHER_MAP_APP_ID ""
+#define OPEN_WEATHER_MAP_LOCATTION_LAT 47.4322671f
+#define OPEN_WEATHER_MAP_LOCATTION_LON 8.5779983f
+
 // Disables touchpads if they are overly sensitive and result in phantom touch events
 #define TOUCHPAD_ENABLE true
 

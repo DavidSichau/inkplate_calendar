@@ -136,7 +136,7 @@ void startActivitiesTask()
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
-        8192,                   // Stack size
+        8192*10,                   // Stack size
         NULL,                   // Parameter
         ACTIVITY_TASK_PRIORITY, // Task priority
         NULL                    // Task handle

@@ -14,7 +14,12 @@
         "string_view": "cpp",
         "vector": "cpp",
         "functional": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "*.tcc": "cpp",
+        "iomanip": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp"
     },
     "editor.fontSize": 16,
     "scm.inputFontSize": 15,
