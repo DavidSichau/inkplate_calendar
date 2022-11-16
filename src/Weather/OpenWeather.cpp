@@ -24,6 +24,7 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include "Weather/OpenWeather.h"
+#include "homeplate.h"
 
 String PATH_SEPERATOR = "/";
 
@@ -54,6 +55,7 @@ void OpenWeatherMapOneCall::doUpdate(OpenWeatherMapOneCallData *data, String pat
   parser.setListener(this);
   Serial.printf("[HTTP] Requesting resource at http://%s:%u%s\n", host.c_str(), port, path.c_str());
 
+  waitForWiFi();
   WiFiClient client;
   if (client.connect(host.c_str(), port)) {
     bool isBody = false;
@@ -87,6 +89,8 @@ void OpenWeatherMapOneCall::doUpdate(OpenWeatherMapOneCallData *data, String pat
     Serial.println("[HTTP] failed to connect to host");
   }
   this->data = nullptr;
+  Serial.println("[Weather] finished updating weather");
+
 }
 
 void OpenWeatherMapOneCall::whitespace(char c)
@@ -351,6 +355,7 @@ void OpenWeatherMapOneCall::endObject()
 
 void OpenWeatherMapOneCall::endDocument()
 {
+    Serial.println("end document");
 }
 
 void OpenWeatherMapOneCall::startArray()

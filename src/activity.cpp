@@ -98,6 +98,17 @@ void runActivities(void *params)
             remotePNG(IMAGE_URL);
             // delaySleep(10);
             break;
+        case Weather:
+            delaySleep(15);
+            setSleepDuration(TIME_TO_SLEEP_SEC);
+            // wait for wifi or reset activity
+            if (resetActivity)
+            {
+                Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
+                continue;
+            }
+            displayWeather();
+            break;
         case GuestWifi:
             // only change activities if necessary
             if (activityCurrent != GuestWifi)

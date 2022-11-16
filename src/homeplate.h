@@ -1,11 +1,15 @@
 #pragma once
 
 #include <Inkplate.h>
+
 #include "fonts/Roboto_12.h"
 #include "fonts/Roboto_16.h"
+#include "fonts/Roboto_20.h"
 #include "fonts/Roboto_32.h"
+#include "fonts/Roboto_40.h"
 #include "fonts/Roboto_64.h"
 #include "fonts/Roboto_128.h"
+#include "fonts/Roboto_200.h"
 #include "config.h"
 
 // check that config file is correctly set
@@ -57,6 +61,9 @@ bool getWifIFailed();
 // QR
 void displayWiFiQR();
 
+// Weather
+void displayWeather();
+
 // info
 void displayInfoScreen();
 
@@ -72,8 +79,8 @@ void startMonitoringButtonsTask();
 void checkBootPads();
 
 // Sleep
-#define TIME_TO_SLEEP_SEC (TIME_TO_SLEEP_MIN * 60)    // How long ESP32 will be in deep sleep (in seconds)
-#define TIME_TO_QUICK_SLEEP_SEC 5 * 60 // 5 minutes. How long ESP32 will be in deep sleep (in seconds) for short activities
+#define TIME_TO_SLEEP_SEC (TIME_TO_SLEEP_MIN * 60) // How long ESP32 will be in deep sleep (in seconds)
+#define TIME_TO_QUICK_SLEEP_SEC 5 * 60             // 5 minutes. How long ESP32 will be in deep sleep (in seconds) for short activities
 void startSleep();
 void setSleepDuration(uint32_t sec);
 void gotoSleepNow();
@@ -83,6 +90,7 @@ void setupTimeAndSyncTask();
 bool getNTPSynced();
 char *timeString();
 char *fullDateString();
+char *composeDateChar2();
 
 // OTA
 void startOTATask();
@@ -97,19 +105,19 @@ void printDebugStackSpace();
 void displayBatteryWarning();
 void printDebug(const char *s);
 
-
 // activity
 enum Activity
 {
     NONE,
     HomeAssistant,
+    Weather,
     GuestWifi,
     Info,
     Message,
     IMG,
 };
 
-#define DEFAULT_ACTIVITY HomeAssistant
+#define DEFAULT_ACTIVITY Weather
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();
@@ -133,15 +141,15 @@ void delaySleep(uint seconds);
 #define MIN_ACTIVITY_RESTART_SECS 5
 
 // network settings
-#define WIFI_TIMEOUT_MS (20 * SECOND) // 20 second WiFi connection timeout
-#define WIFI_RECOVER_TIME_MS (30 * SECOND)    // Wait 30 seconds after a failed connection attempt
+#define WIFI_TIMEOUT_MS (20 * SECOND)      // 20 second WiFi connection timeout
+#define WIFI_RECOVER_TIME_MS (30 * SECOND) // Wait 30 seconds after a failed connection attempt
 
 // input debounce
 #define DEBOUNCE_DELAY_MS (SECOND / 2)
 
 // debug settings
 #define DEBUG_STACK false
-#define DEBUG_PRINT true
+#define DEBUG_PRINT false
 
 // Sleep
 #define SLEEP_TIMEOUT_SEC 15

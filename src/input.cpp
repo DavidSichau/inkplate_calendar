@@ -58,7 +58,7 @@ void checkButtons(void *params)
             else if (checkPad(PAD2))
             {
                 Serial.printf("[INPUT] touchpad 2\n");
-                startActivity(GuestWifi);
+                startActivity(Weather);
                 button = true;
             }
             else if (checkPad(PAD3))
@@ -121,7 +121,7 @@ void checkBootPads()
         else if (key & INT_PAD2)
         {
             Serial.println("[INPUT] boot: PAD2");
-            startActivity(GuestWifi);
+            startActivity(Weather);
         }
         else if (key & INT_PAD3)
         {

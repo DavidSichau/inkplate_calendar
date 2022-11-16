@@ -143,27 +143,6 @@ bool drawPngFromBuffer(uint8_t *buff, int32_t len, int x, int y)
     return ret;
 }
 
-// returns height
-// y value should be the top of the text location
-uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock)
-{
-    // center text
-    int16_t x1b, y1b;
-    uint16_t w, h;
-    // y = n to give plenty of room for text to clear height of screen
-    display.getTextBounds(t, 0, 100, &x1b, &y1b, &w, &h);
-
-    int16_t x = ((x2 - x1) - w) / 2 + x1;
-
-    if (lock)
-        displayStart();
-    display.setCursor(x, y + h);
-    display.print(t);
-    if (lock)
-        displayEnd();
-    return h;
-}
-
 // NOTE I2C & display locks MUST NOT be held by caller.
 void displayStatusMessage(const char *format, ...)
 {
