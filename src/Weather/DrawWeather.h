@@ -9,7 +9,7 @@ private:
 
     void drawCurrentWeather();
 
-    void drawCurrentTemp();
+    void drawCurrentTemp(int x, int y);
 
 public:
     DrawWeather();

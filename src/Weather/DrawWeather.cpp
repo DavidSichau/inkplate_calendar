@@ -1,9 +1,10 @@
 #include "WeatherStationFonts.h"
 #include "Weather/OpenWeather.h"
 #include "ui/drawHeader.h"
+#include "ui/drawDebug.h"
+
 #include "Weather/DrawWeather.h"
 #include "ui/ui.h"
-
 #include "homeplate.h"
 
 DrawWeather::DrawWeather()
@@ -45,27 +46,38 @@ void DrawWeather::drawCurrentWeather()
   displayEnd();
 }
 
-void DrawWeather::drawCurrentTemp()
+void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
 {
 
   displayStart();
 
-  char temp[10];
-  sprintf(temp, "%.0f °C", this->data.current.temp);
-  char feelTemp[40];
-  sprintf(feelTemp, "feelslike: %.0f °C", this->data.current.feels_like);
+  char temp[3];
+  sprintf(temp, "%.0f", this->data.current.temp);
+  char feelTemp[3];
+  sprintf(feelTemp, "%.0f", this->data.current.feels_like);
 
-  display.setFont(&Roboto_200);
+  display.sdCardInit();
+
+  display.setFont(&Roboto_128);
   auto h = getTextHeight(temp);
-  display.setCursor(405, 35 + h);
+  auto w = getTextWidth(temp);
+  display.drawImage("png/256/wi-celsius.png", x + w - 30, 165 - 157, false);
+
+  display.setCursor(x + 15, 165);
   display.print(temp);
 
-  auto h2 = getTextHeight(feelTemp);
-
   display.setFont(&Roboto_64);
-  display.setCursor(405, 35 + h + h2 + 20);
+  auto h2 = getTextHeight(feelTemp);
+  auto w2 = getTextWidth(feelTemp);
+
+  display.drawImage("png/128/wi-celsius.png", x + w2 + 40, 207, false);
+  display.drawImage("png/64/wi-thermometer-exterior.png", x + 5, 233, false);
+  display.setCursor(x + 20 + 45, 285);
   display.print(feelTemp);
-  display.display();
+
+  // display.drawFastHLine(0, 165, 1200, BLACK);
+  // display.drawFastVLine(x + 20, 0, 825, BLACK);
+  // display.drawFastHLine(0, 285, 1200, BLACK);
 
   displayEnd();
 }
@@ -74,13 +86,21 @@ void DrawWeather::drawWeather()
 {
   displayStart();
 
-  display.clearDisplay();
-  display.selectDisplayMode(INKPLATE_1BIT);
+  display.selectDisplayMode(INKPLATE_3BIT);
   display.setTextColor(BLACK, WHITE); // Set text color to black on white
   drawHeader();
+  drawDebug();
 
   displayEnd();
 
   this->drawCurrentTemp();
-  this->drawCurrentWeather();
+  // this->drawCurrentWeather();
+
+  displayStart();
+
+  drawHeader();
+  drawDebug();
+  display.display();
+
+  displayEnd();
 }

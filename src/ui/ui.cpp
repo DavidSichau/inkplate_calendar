@@ -11,6 +11,16 @@ uint16_t getTextHeight(const char *t)
     return h;
 }
 
+uint16_t getTextWidth(const char *t)
+{
+    int16_t x1b, y1b;
+    uint16_t w, h;
+    // y = n to give plenty of room for text to clear height of screen
+    display.getTextBounds(t, 0, 100, &x1b, &y1b, &w, &h);
+
+    return w;
+}
+
 // returns height
 // y value should be the top of the text location
 uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock)
