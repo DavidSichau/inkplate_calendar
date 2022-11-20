@@ -11,6 +11,8 @@ private:
 
     void drawCurrentTemp(int x, int y);
 
+    void drawCurrentStats(int x, int y);
+
 public:
     DrawWeather();
 

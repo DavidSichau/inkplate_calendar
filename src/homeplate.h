@@ -91,9 +91,10 @@ bool getNTPSynced();
 char *timeString();
 char *fullDateString();
 char *composeDateChar2();
+char *timeFromUnixString(uint32_t utc);
 
-// OTA
-void startOTATask();
+    // OTA
+    void startOTATask();
 void waitForOTA();
 
 // util

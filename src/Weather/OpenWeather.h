@@ -1,17 +1,17 @@
 /**The MIT License (MIT)
- 
+
  Copyright (c) 2020 by Chris Klinger
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,8 @@
 #include <JsonListener.h>
 #include <JsonStreamingParser.h>
 
-typedef struct OpenWeatherMapOneCallCurrentData {
+typedef struct OpenWeatherMapOneCallCurrentData
+{
   // "dt":1587216739
   uint32_t dt;
   // "sunrise":1587182465
@@ -45,6 +46,10 @@ typedef struct OpenWeatherMapOneCallCurrentData {
   float dew_point;
   // "uvi": 4.5
   float uvi;
+  // "rain": 5.97
+  float rain;
+  // "snow":	0.15
+  float snow;
   // "clouds": 0
   uint8_t clouds;
   // visibility: 10000
@@ -65,7 +70,8 @@ typedef struct OpenWeatherMapOneCallCurrentData {
 
 } OpenWeatherMapOneCallCurrentData;
 
-typedef struct OpenWeatherMapOneCallHourlyData {
+typedef struct OpenWeatherMapOneCallHourlyData
+{
   // "dt":1587216739
   uint32_t dt;
   // "temp": 290.56
@@ -96,7 +102,8 @@ typedef struct OpenWeatherMapOneCallHourlyData {
 
 } OpenWeatherMapOneCallHourlyData;
 
-typedef struct OpenWeatherMapOneCallDailyData {
+typedef struct OpenWeatherMapOneCallDailyData
+{
   // "dt":1587216739
   uint32_t dt;
   // "sunrise":1587182465
@@ -153,7 +160,8 @@ typedef struct OpenWeatherMapOneCallDailyData {
 
 } OpenWeatherMapOneCallDailyData;
 
-typedef struct OpenWeatherMapOneCallData {
+typedef struct OpenWeatherMapOneCallData
+{
   // "lon": 8.54,
   float lon;
   // "lat": 47.37
@@ -168,46 +176,47 @@ typedef struct OpenWeatherMapOneCallData {
   OpenWeatherMapOneCallDailyData daily[8];
 } OpenWeatherMapOneCallData;
 
-class OpenWeatherMapOneCall: public JsonListener {
-  private:
-    const String host = "api.openweathermap.org";
-    const uint8_t port = 80;
-    String currentKey = "ROOT";
-    String currentParent;
-    OpenWeatherMapOneCallData *data;
-    uint8_t weatherItemCounter = 0;
-    uint8_t dailyItemCounter = 0;
-    uint8_t hourlyItemCounter = 0;
+class OpenWeatherMapOneCall : public JsonListener
+{
+private:
+  const String host = "api.openweathermap.org";
+  const uint8_t port = 80;
+  String currentKey = "ROOT";
+  String currentParent;
+  OpenWeatherMapOneCallData *data;
+  uint8_t weatherItemCounter = 0;
+  uint8_t dailyItemCounter = 0;
+  uint8_t hourlyItemCounter = 0;
 
-    boolean metric = true;
-    String language;
-    uint8_t maxDailyForecasts = 5;
-    uint8_t maxHourlyForecasts = 12;
-    uint8_t *allowedHours;
-    uint8_t allowedHoursCount = 0;
-    uint8_t currentForecast;
+  boolean metric = true;
+  String language;
+  uint8_t maxDailyForecasts = 5;
+  uint8_t maxHourlyForecasts = 12;
+  uint8_t *allowedHours;
+  uint8_t allowedHoursCount = 0;
+  uint8_t currentForecast;
 
-    void doUpdate(OpenWeatherMapOneCallData *data, String path);
-    String buildPath(String appId, float lat, float lon);
+  void doUpdate(OpenWeatherMapOneCallData *data, String path);
+  String buildPath(String appId, float lat, float lon);
 
-  public:
-    OpenWeatherMapOneCall();
-    void update(OpenWeatherMapOneCallData *data, String appId, float lat, float lon);
+public:
+  OpenWeatherMapOneCall();
+  void update(OpenWeatherMapOneCallData *data, String appId, float lat, float lon);
 
-    void setMetric(boolean metric) {this->metric = metric;}
-    boolean isMetric() { return metric; }
-    void setLanguage(String language) { this->language = language; }
-    String getLanguage() { return language; }
-    
-    String getMeteoconIcon(String icon);
+  void setMetric(boolean metric) { this->metric = metric; }
+  boolean isMetric() { return metric; }
+  void setLanguage(String language) { this->language = language; }
+  String getLanguage() { return language; }
 
-    virtual void whitespace(char c);
-    virtual void startDocument();
-    virtual void key(String key);
-    virtual void value(String value);
-    virtual void endArray();
-    virtual void endObject();
-    virtual void endDocument();
-    virtual void startArray();
-    virtual void startObject();
+  String getMeteoconIcon(String icon);
+
+  virtual void whitespace(char c);
+  virtual void startDocument();
+  virtual void key(String key);
+  virtual void value(String value);
+  virtual void endArray();
+  virtual void endObject();
+  virtual void endDocument();
+  virtual void startArray();
+  virtual void startObject();
 };

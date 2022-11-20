@@ -1,6 +1,7 @@
 #include <NTPClient.h>
 #include <TimeLib.h>
 #include <Timezone.h>
+#include <ctime>
 
 #include "homeplate.h"
 #include "timezone_config.h"
@@ -87,6 +88,17 @@ char *timeString()
 
     snprintf(timeStringBuf, 17, "%02d:%02d", hour(local), minute(local));
     return timeStringBuf;
+}
+
+char timeStringBuf2[6]; // 13:37
+char *timeFromUnixString(uint32_t utc)
+{
+    TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
+    time_t t = std::time(0);
+    time_t local = tz.toLocal(utc, &tcr);
+
+    snprintf(timeStringBuf2, 17, "%02d:%02d", hour(local), minute(local));
+    return timeStringBuf2;
 }
 
 static const char *lang_months[][12] = {
