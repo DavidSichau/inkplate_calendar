@@ -98,7 +98,6 @@ typedef struct OpenWeatherMapOneCallHourlyData
   String weatherDescription;
   // "icon": "09d"
   String weatherIcon;
-  String weatherIconMeteoCon;
 
 } OpenWeatherMapOneCallHourlyData;
 
@@ -208,8 +207,6 @@ public:
   void setLanguage(String language) { this->language = language; }
   String getLanguage() { return language; }
 
-  String getMeteoconIcon(String icon);
-
   virtual void whitespace(char c);
   virtual void startDocument();
   virtual void key(String key);
@@ -220,3 +217,5 @@ public:
   virtual void startArray();
   virtual void startObject();
 };
+
+String getPngForWeatherId(uint16_t weatherId, bool night);

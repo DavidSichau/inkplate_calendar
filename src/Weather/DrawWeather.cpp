@@ -1,11 +1,14 @@
 #include "WeatherStationFonts.h"
 #include "Weather/OpenWeather.h"
+#include "Weather/SunMoonCalc.h"
+
 #include "ui/drawHeader.h"
 #include "ui/drawDebug.h"
 
 #include "Weather/DrawWeather.h"
 #include "ui/ui.h"
 #include "homeplate.h"
+#include <Timezone.h>
 
 DrawWeather::DrawWeather()
 {
@@ -18,30 +21,38 @@ DrawWeather::DrawWeather()
   Serial.println("[Weather]: loaded data");
 }
 
+bool DrawWeather::isNight()
+{
+  uint32_t now = (int)time(nullptr);
+
+  auto sunrise = this->data.current.sunrise;
+  auto sunset = this->data.current.sunset;
+
+  if (now > sunrise && now < sunset)
+  {
+    return false;
+  }
+  return true;
+}
+
 // draws current weather information
-void DrawWeather::drawCurrentWeather()
+void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
 {
 
   displayStart();
 
-  //   display.setTextAlignment(TEXT_ALIGN_CENTER);
-  display.setCursor(50, 50);
+  auto png = getPngForWeatherId(this->data.current.weatherId, this->isNight());
 
-  display.setFont(&Meteocons_Regular_42);
-  display.println(this->data.current.weatherIconMeteoCon);
+  display.sdCardInit();
 
-  display.setFont(&Roboto_64);
-  display.println("Opfikon");
+  Serial.println("png/256/" + png);
 
-  display.setFont(&Roboto_64);
-  //   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.println(String(this->data.current.temp, 0) + "°C");
+  display.drawImage("png/256/" + png + ".png", x + 40, y-20, false);
 
-  display.setFont(&Roboto_64);
-  //   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  Serial.println(this->data.current.weatherDescription);
-  display.print(this->data.current.weatherDescription);
-  display.partialUpdate();
+  auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
+  auto sunMoon = smCalc.calculateSunAndMoonData();
+
+  display.drawImage("png/128/" + sunMoon.moon.phase.icon + ".png", x + 270, y + 140, false);
 
   displayEnd();
 }
@@ -52,9 +63,9 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   displayStart();
 
   char temp[3];
-  sprintf(temp, "%.0f", this->data.current.temp);
+  sprintf(temp, "%.0f", abs(this->data.current.temp));
   char feelTemp[3];
-  sprintf(feelTemp, "%.0f", this->data.current.feels_like);
+  sprintf(feelTemp, "%.0f", abs(this->data.current.feels_like));
 
   display.sdCardInit();
 
@@ -91,25 +102,25 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
 
   auto startYImg = 35;
 
-  display.drawImage("png/64/wi-barometer.png", x + 15, startYImg + 65 * 0, false);
+  display.drawImage("png/64/wi-barometer.png", x + 5, startYImg + 65 * 0, false);
 
   display.drawImage("png/64/wi-thermometer-internal.png", x + 205, startYImg + 65 * 0, false);
 
-  display.drawImage("png/64/wi-strong-wind.png", x + 15, startYImg + 65 * 1, false);
+  display.drawImage("png/64/wi-strong-wind.png", x + 5, startYImg + 65 * 1, false);
 
   display.drawImage("png/64/wi-humidity.png", x + 205, startYImg + 65 * 1, false);
 
-  display.drawImage("png/64/wi-sunrise.png", x + 15, startYImg + 65 * 2, false);
+  display.drawImage("png/64/wi-sunrise.png", x + 5, startYImg + 65 * 2, false);
 
   display.drawImage("png/64/wi-sunset.png", x + 205, startYImg + 65 * 2, false);
 
-  display.drawImage("png/64/wi-umbrella.png", x + 15, startYImg + 65 * 3, false);
+  display.drawImage("png/64/wi-umbrella.png", x + 5, startYImg + 65 * 3, false);
 
   display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + 65 * 3, false);
 
   display.setFont(&Roboto_32);
 
-  auto firstColumn = 85;
+  auto firstColumn = 75;
   auto secondColumn = 275;
   auto startY = 85;
 
@@ -122,7 +133,7 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.printf("%dC", temp);
 
   display.setCursor(x + firstColumn, startY + 65 * 1);
-  display.printf("%.0f m/s", abs(this->data.current.windSpeed));
+  display.printf("%.0f km/h", abs(this->data.current.windSpeed * 3.6));
 
   display.setCursor(x + secondColumn, startY + 65 * 1);
   display.printf("%.0i %", abs(this->data.current.humidity));
@@ -134,7 +145,7 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.print(timeFromUnixString(this->data.current.sunset));
 
   display.setCursor(x + firstColumn, startY + 65 * 3);
-  display.printf("%.0f mm", abs(this->data.current.rain));
+  display.printf("%.1f mm", abs(this->data.current.rain));
 
   display.setCursor(x + secondColumn, startY + 65 * 3);
   display.printf("%.1f", this->data.current.uvi);
@@ -157,11 +168,10 @@ void DrawWeather::drawWeather()
 
   display.selectDisplayMode(INKPLATE_3BIT);
   display.setTextColor(BLACK, WHITE); // Set text color to black on white
-  drawHeader();
-  drawDebug();
 
   displayEnd();
 
+  this->drawCurrentWeather();
   this->drawCurrentTemp();
   this->drawCurrentStats();
 

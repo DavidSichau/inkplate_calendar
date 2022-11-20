@@ -173,10 +173,14 @@ void OpenWeatherMapOneCall::value(String value)
     {
       this->data->current.uvi = value.toFloat();
     }
+    // TODO does not work jet
     if (currentParent.startsWith("/ROOT/current/rain[]") && weatherItemCounter == 0)
     {
+      Serial.println("HERERERERE" + value);
+
       if (currentKey == "1h")
       {
+        Serial.println("Rain" + value);
         this->data->current.rain = value.toFloat();
       }
     }
@@ -221,7 +225,6 @@ void OpenWeatherMapOneCall::value(String value)
       if (currentKey == "icon")
       {
         this->data->current.weatherIcon = value;
-        this->data->current.weatherIconMeteoCon = getMeteoconIcon(value);
       }
     }
   }
@@ -284,7 +287,6 @@ void OpenWeatherMapOneCall::value(String value)
       if (currentKey == "icon")
       {
         this->data->hourly[hourlyItemCounter].weatherIcon = value;
-        this->data->hourly[hourlyItemCounter].weatherIconMeteoCon = getMeteoconIcon(value);
       }
     }
   }
@@ -406,7 +408,6 @@ void OpenWeatherMapOneCall::value(String value)
       if (currentKey == "icon")
       {
         this->data->daily[dailyItemCounter].weatherIcon = value;
-        this->data->daily[dailyItemCounter].weatherIconMeteoCon = getMeteoconIcon(value);
       }
     }
   }
@@ -458,107 +459,176 @@ void OpenWeatherMapOneCall::startArray()
   currentKey = "";
 }
 
-String OpenWeatherMapOneCall::getMeteoconIcon(String icon)
+String getPngForWeatherId(uint16_t weatherId, bool night = false)
 {
-  // clear sky
-  // 01d
-  if (icon == "01d")
+  // see https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
+  // https://erikflowers.github.io/weather-icons/api-list.html
+
+  if (night)
   {
-    return "B";
+    if (weatherId == 200 || weatherId == 201 || weatherId == 202 || weatherId == 230 || weatherId == 231 || weatherId == 232)
+    {
+      return "wi-night-thunderstorm";
+    }
+    if (weatherId == 210 || weatherId == 211 || weatherId == 212 || weatherId == 221)
+    {
+      return "wi-night-lightning";
+    }
+
+    if (weatherId == 300 || weatherId == 301 || weatherId == 321 || weatherId == 500)
+    {
+      return "wi-night-sprinkle";
+    }
+    if (weatherId == 302 || weatherId == 310 || weatherId == 311 || weatherId == 312 || weatherId == 313 || weatherId == 314 || weatherId == 501 || weatherId == 502 || weatherId == 503 || weatherId == 504)
+    {
+      return "wi-night-rain";
+    }
+    if (weatherId == 511 || weatherId == 615 || weatherId == 616 || weatherId == 620)
+    {
+      return "wi-day-night-mix";
+    }
+    if (weatherId == 313 || weatherId == 520 || weatherId == 521 || weatherId == 522)
+    {
+      return "wi-night-showers";
+    }
+    if (weatherId == 531 || weatherId == 901)
+    {
+      return "wi-night-storm-showers";
+    }
+    if (weatherId == 600 || weatherId == 601 || weatherId == 602 || weatherId == 621 || weatherId == 622)
+    {
+      return "wi-night-snow";
+    }
+    if (weatherId == 611 || weatherId == 612 || weatherId == 613)
+    {
+      return "wi-night-sleet";
+    }
+    if (weatherId == 701 || weatherId == 741)
+    {
+      return "wi-fog";
+    }
+    if (weatherId == 711)
+    {
+      return "wi-smog";
+    }
+    if (weatherId == 721)
+    {
+      return "wi-night-haze";
+    }
+    if (weatherId == 731 || weatherId == 751 || weatherId == 761 || weatherId == 762)
+    {
+      return "wi-dust";
+    }
+    if (weatherId == 771) // Sturmböen
+    {
+      return "wi-night-cloudy-gusts";
+    }
+    if (weatherId == 781)
+    {
+      return "wi-tornado";
+    }
+
+    // 800 Clear
+    if (weatherId == 800)
+    {
+      return "wi-night-clear";
+    }
+    // 80x Clouds
+    if (weatherId == 801 || weatherId == 802)
+    {
+      return "wi-night-cloudy";
+    }
+    if (weatherId == 803)
+    {
+      return "wi-night-cloudy-high";
+    }
+    if (weatherId == 804)
+    {
+      return "wi-cloudy";
+    }
   }
-  // 01n
-  if (icon == "01n")
+  else
   {
-    return "C";
+    if (weatherId == 200 || weatherId == 201 || weatherId == 202 || weatherId == 230 || weatherId == 231 || weatherId == 232)
+    {
+      return "wi-day-thunderstorm";
+    }
+    if (weatherId == 210 || weatherId == 211 || weatherId == 212 || weatherId == 221)
+    {
+      return "wi-day-lightning";
+    }
+
+    if (weatherId == 300 || weatherId == 301 || weatherId == 321 || weatherId == 500)
+    {
+      return "wi-day-sprinkle";
+    }
+    if (weatherId == 302 || weatherId == 310 || weatherId == 311 || weatherId == 312 || weatherId == 313 || weatherId == 314 || weatherId == 501 || weatherId == 502 || weatherId == 503 || weatherId == 504)
+    {
+      return "wi-day-rain";
+    }
+    if (weatherId == 511 || weatherId == 615 || weatherId == 616 || weatherId == 620)
+    {
+      return "wi-day-rain-mix";
+    }
+    if (weatherId == 313 || weatherId == 520 || weatherId == 521 || weatherId == 522)
+    {
+      return "wi-day-showers";
+    }
+    if (weatherId == 531 || weatherId == 901)
+    {
+      return "wi-day-storm-showers";
+    }
+    if (weatherId == 600 || weatherId == 601 || weatherId == 602 || weatherId == 621 || weatherId == 622)
+    {
+      return "wi-day-snow";
+    }
+    if (weatherId == 611 || weatherId == 612 || weatherId == 613)
+    {
+      return "wi-day-sleet";
+    }
+    if (weatherId == 701 || weatherId == 741)
+    {
+      return "wi-fog";
+    }
+    if (weatherId == 711)
+    {
+      return "wi-smog";
+    }
+    if (weatherId == 721)
+    {
+      return "wi-day-haze";
+    }
+    if (weatherId == 731 || weatherId == 751 || weatherId == 761 || weatherId == 762)
+    {
+      return "wi-dust";
+    }
+    if (weatherId == 771) // Sturmböen
+    {
+      return "wi-day-cloudy-gusts";
+    }
+    if (weatherId == 781)
+    {
+      return "wi-tornado";
+    }
+
+    // 800 Clear
+    if (weatherId == 800)
+    {
+      return "wi-day-sunny";
+    }
+    // 80x Clouds
+    if (weatherId == 801 || weatherId == 802)
+    {
+      return "wi-day-cloudy";
+    }
+    if (weatherId == 803)
+    {
+      return "wi-day-cloudy-high";
+    }
+    if (weatherId == 804)
+    {
+      return "wi-cloudy";
+    }
   }
-  // few clouds
-  // 02d
-  if (icon == "02d")
-  {
-    return "H";
-  }
-  // 02n
-  if (icon == "02n")
-  {
-    return "4";
-  }
-  // scattered clouds
-  // 03d
-  if (icon == "03d")
-  {
-    return "N";
-  }
-  // 03n
-  if (icon == "03n")
-  {
-    return "5";
-  }
-  // broken clouds
-  // 04d
-  if (icon == "04d")
-  {
-    return "Y";
-  }
-  // 04n
-  if (icon == "04n")
-  {
-    return "%";
-  }
-  // shower rain
-  // 09d
-  if (icon == "09d")
-  {
-    return "R";
-  }
-  // 09n
-  if (icon == "09n")
-  {
-    return "8";
-  }
-  // rain
-  // 10d
-  if (icon == "10d")
-  {
-    return "Q";
-  }
-  // 10n
-  if (icon == "10n")
-  {
-    return "7";
-  }
-  // thunderstorm
-  // 11d
-  if (icon == "11d")
-  {
-    return "P";
-  }
-  // 11n
-  if (icon == "11n")
-  {
-    return "6";
-  }
-  // snow
-  // 13d
-  if (icon == "13d")
-  {
-    return "W";
-  }
-  // 13n
-  if (icon == "13n")
-  {
-    return "#";
-  }
-  // mist
-  // 50d
-  if (icon == "50d")
-  {
-    return "M";
-  }
-  // 50n
-  if (icon == "50n")
-  {
-    return "M";
-  }
-  // Nothing matched: N/A
-  return ")";
+  return "wi-na";
 }
