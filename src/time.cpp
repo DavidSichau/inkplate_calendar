@@ -124,7 +124,7 @@ char *composeDateChar2()
     byte dateMinute = minute(local);
 
     // Let's stick with English for now
-    sprintf(dateBuf, "%2d %3s %2d:%2d", dateDay, lang_months[1][dateMonth - 1], dateHour, dateMinute);
+    sprintf(dateBuf, "%2d %3s %02d:%02d", dateDay, lang_months[1][dateMonth - 1], dateHour, dateMinute);
 
     return dateBuf;
 }
