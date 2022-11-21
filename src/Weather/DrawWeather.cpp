@@ -44,14 +44,12 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
 
   display.sdCardInit();
 
-  Serial.println("png/256/" + png);
-
-  display.drawImage("png/256/" + png + ".png", x + 40, y - 20, false);
+  display.drawImage("png/256/" + png + ".png", x + 70, y + 30, false);
 
   auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
   auto sunMoon = smCalc.calculateSunAndMoonData();
 
-  display.drawImage("png/128/" + sunMoon.moon.phase.icon + ".png", x + 270, y + 140, false);
+  display.drawImage("png/64/" + sunMoon.moon.phase.icon + ".png", x + 10, y + 10, false);
 
   displayEnd();
 }
@@ -80,10 +78,24 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   auto h2 = getTextHeight(feelTemp);
   auto w2 = getTextWidth(feelTemp);
 
+  char intTemp[3];
+  sprintf(intTemp, "%.0d", display.readTemperature());
+  auto w3 = getTextWidth(intTemp);
+
   display.drawImage("png/128/wi-celsius.png", x + w2 + 40, 207, false);
+  display.drawImage("png/128/wi-celsius.png", x + 240 + w3, 207, false);
+
   display.drawImage("png/64/wi-thermometer-exterior.png", x + 5, 233, false);
+  display.drawImage("png/64/wi-thermometer-internal.png", x + 195, 233, false);
+
   display.setCursor(x + 20 + 45, 285);
   display.print(feelTemp);
+
+  // move to middle
+  display.setCursor(x + 255, 285);
+
+  // TODO get correct temperature and display it with Grad C
+  display.print(intTemp);
 
   // display.drawFastHLine(0, 165, 1200, BLACK);
   // display.drawFastVLine(x + 20, 0, 825, BLACK);
@@ -129,16 +141,11 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.setCursor(x + secondColumn, startY + 65 * 0);
   display.printf("%.1f", this->data.current.uvi);
 
-  // move to middle
-  //  int temp = display.readTemperature();
-  //  // TODO get correct temperature and display it with Grad C
-  //  display.printf("%dC", temp);
-
   display.setCursor(x + firstColumn, startY + 65 * 1);
   display.printf("%.0f km/h", abs(this->data.current.windSpeed * 3.6));
 
   display.setCursor(x + secondColumn, startY + 65 * 1);
-  display.printf("%.0i %", abs(this->data.current.humidity));
+  display.printf("%.0i %%", abs(this->data.current.humidity));
 
   display.setCursor(x + firstColumn, startY + 65 * 2);
   display.print(timeFromUnixString(this->data.current.sunrise));
@@ -150,7 +157,7 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.printf("%.1f mm", abs(this->data.hourly[0].rain));
 
   display.setCursor(x + secondColumn, startY + 65 * 3);
-  display.printf("%.0f %", abs(this->data.hourly[0].pop * 100));
+  display.printf("%.0f %%", abs(this->data.hourly[0].pop * 100));
 
   // display.drawFastVLine(x + 20, 0, 825, BLACK);
   // display.drawFastVLine(x + 195 + 20, 0, 825, BLACK);

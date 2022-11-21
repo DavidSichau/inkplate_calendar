@@ -431,7 +431,7 @@ void OpenWeatherMapOneCall::endObject()
   if (currentParent == "/ROOT/hourly[]/_obj")
   {
     // ensure that it is set if no value is provided
-    if (abs(this->data->hourly[hourlyItemCounter].rain) > 4294967040.0)
+    if (abs(this->data->hourly[hourlyItemCounter].rain) > 25000.0)
     {
       this->data->hourly[hourlyItemCounter].rain = 0.0;
     }
