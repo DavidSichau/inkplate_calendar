@@ -23,8 +23,7 @@ DrawWeather::DrawWeather()
 
 bool DrawWeather::isNight()
 {
-  uint32_t now = (int)time(nullptr);
-
+  auto now = this->data.current.dt;
   auto sunrise = this->data.current.sunrise;
   auto sunset = this->data.current.sunset;
 
@@ -47,7 +46,7 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
 
   Serial.println("png/256/" + png);
 
-  display.drawImage("png/256/" + png + ".png", x + 40, y-20, false);
+  display.drawImage("png/256/" + png + ".png", x + 40, y - 20, false);
 
   auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
   auto sunMoon = smCalc.calculateSunAndMoonData();
@@ -102,25 +101,25 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
 
   auto startYImg = 35;
 
-  display.drawImage("png/64/wi-barometer.png", x + 5, startYImg + 65 * 0, false);
+  display.drawImage("png/64/wi-barometer.png", x, startYImg + 65 * 0, false);
 
-  display.drawImage("png/64/wi-thermometer-internal.png", x + 205, startYImg + 65 * 0, false);
+  display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + 65 * 0, false);
 
-  display.drawImage("png/64/wi-strong-wind.png", x + 5, startYImg + 65 * 1, false);
+  display.drawImage("png/64/wi-strong-wind.png", x, startYImg + 65 * 1, false);
 
   display.drawImage("png/64/wi-humidity.png", x + 205, startYImg + 65 * 1, false);
 
-  display.drawImage("png/64/wi-sunrise.png", x + 5, startYImg + 65 * 2, false);
+  display.drawImage("png/64/wi-sunrise.png", x, startYImg + 65 * 2, false);
 
   display.drawImage("png/64/wi-sunset.png", x + 205, startYImg + 65 * 2, false);
 
-  display.drawImage("png/64/wi-umbrella.png", x + 5, startYImg + 65 * 3, false);
+  display.drawImage("png/64/wi-raindrops.png", x, startYImg + 65 * 3, false);
 
-  display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + 65 * 3, false);
+  display.drawImage("png/64/wi-umbrella.png", x + 205, startYImg + 65 * 3, false);
 
   display.setFont(&Roboto_32);
 
-  auto firstColumn = 75;
+  auto firstColumn = 65;
   auto secondColumn = 275;
   auto startY = 85;
 
@@ -128,9 +127,12 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.printf("%.0i hPa", this->data.current.pressure);
 
   display.setCursor(x + secondColumn, startY + 65 * 0);
-  int temp = display.readTemperature();
-  // TODO get correct temperature and display it with Grad C
-  display.printf("%dC", temp);
+  display.printf("%.1f", this->data.current.uvi);
+
+  // move to middle
+  //  int temp = display.readTemperature();
+  //  // TODO get correct temperature and display it with Grad C
+  //  display.printf("%dC", temp);
 
   display.setCursor(x + firstColumn, startY + 65 * 1);
   display.printf("%.0f km/h", abs(this->data.current.windSpeed * 3.6));
@@ -145,10 +147,10 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.print(timeFromUnixString(this->data.current.sunset));
 
   display.setCursor(x + firstColumn, startY + 65 * 3);
-  display.printf("%.1f mm", abs(this->data.current.rain));
+  display.printf("%.1f mm", abs(this->data.hourly[0].rain));
 
   display.setCursor(x + secondColumn, startY + 65 * 3);
-  display.printf("%.1f", this->data.current.uvi);
+  display.printf("%.0f %", abs(this->data.hourly[0].pop * 100));
 
   // display.drawFastVLine(x + 20, 0, 825, BLACK);
   // display.drawFastVLine(x + 195 + 20, 0, 825, BLACK);

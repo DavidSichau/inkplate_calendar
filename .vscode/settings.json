@@ -52,7 +52,9 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     },
     "editor.fontSize": 16,
     "scm.inputFontSize": 15,

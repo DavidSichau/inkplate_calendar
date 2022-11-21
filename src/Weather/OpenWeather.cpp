@@ -108,6 +108,7 @@ void OpenWeatherMapOneCall::whitespace(char c)
 void OpenWeatherMapOneCall::startDocument()
 {
   Serial.println("start document");
+  this->hourlyItemCounter = 0;
 }
 
 void OpenWeatherMapOneCall::key(String key)
@@ -172,24 +173,6 @@ void OpenWeatherMapOneCall::value(String value)
     if (currentKey == "uvi")
     {
       this->data->current.uvi = value.toFloat();
-    }
-    // TODO does not work jet
-    if (currentParent.startsWith("/ROOT/current/rain[]") && weatherItemCounter == 0)
-    {
-      Serial.println("HERERERERE" + value);
-
-      if (currentKey == "1h")
-      {
-        Serial.println("Rain" + value);
-        this->data->current.rain = value.toFloat();
-      }
-    }
-    if (currentParent.startsWith("/ROOT/current/snow[]") && weatherItemCounter == 0)
-    {
-      if (currentKey == "1h")
-      {
-        this->data->current.snow = value.toFloat();
-      }
     }
     if (currentKey == "clouds")
     {
@@ -267,6 +250,17 @@ void OpenWeatherMapOneCall::value(String value)
     if (currentKey == "wind_deg")
     {
       this->data->hourly[hourlyItemCounter].windDeg = value.toFloat();
+    }
+    if (currentKey == "pop")
+    {
+      this->data->hourly[hourlyItemCounter].pop = value.toFloat();
+    }
+    if (currentParent.startsWith("/ROOT/hourly[]/_obj/rain"))
+    {
+      if (currentKey == "1h")
+      {
+        this->data->hourly[hourlyItemCounter].rain = value.toFloat();
+      }
     }
 
     // weatherItemCounter: only get the first item if more than one is available
@@ -436,6 +430,11 @@ void OpenWeatherMapOneCall::endObject()
   }
   if (currentParent == "/ROOT/hourly[]/_obj")
   {
+    // ensure that it is set if no value is provided
+    if (abs(this->data->hourly[hourlyItemCounter].rain) > 4294967040.0)
+    {
+      this->data->hourly[hourlyItemCounter].rain = 0.0;
+    }
     hourlyItemCounter++;
   }
   if (currentParent == "/ROOT/daily[]/_obj")
@@ -468,40 +467,40 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
   {
     if (weatherId == 200 || weatherId == 201 || weatherId == 202 || weatherId == 230 || weatherId == 231 || weatherId == 232)
     {
-      return "wi-night-thunderstorm";
+      return "wi-night-alt-thunderstorm";
     }
     if (weatherId == 210 || weatherId == 211 || weatherId == 212 || weatherId == 221)
     {
-      return "wi-night-lightning";
+      return "wi-night-alt-lightning";
     }
 
     if (weatherId == 300 || weatherId == 301 || weatherId == 321 || weatherId == 500)
     {
-      return "wi-night-sprinkle";
+      return "wi-night-alt-sprinkle";
     }
     if (weatherId == 302 || weatherId == 310 || weatherId == 311 || weatherId == 312 || weatherId == 313 || weatherId == 314 || weatherId == 501 || weatherId == 502 || weatherId == 503 || weatherId == 504)
     {
-      return "wi-night-rain";
+      return "wi-night-alt-rain";
     }
     if (weatherId == 511 || weatherId == 615 || weatherId == 616 || weatherId == 620)
     {
-      return "wi-day-night-mix";
+      return "wi-day-night-alt-mix";
     }
     if (weatherId == 313 || weatherId == 520 || weatherId == 521 || weatherId == 522)
     {
-      return "wi-night-showers";
+      return "wi-night-alt-showers";
     }
     if (weatherId == 531 || weatherId == 901)
     {
-      return "wi-night-storm-showers";
+      return "wi-night-alt-storm-showers";
     }
     if (weatherId == 600 || weatherId == 601 || weatherId == 602 || weatherId == 621 || weatherId == 622)
     {
-      return "wi-night-snow";
+      return "wi-night-alt-snow";
     }
     if (weatherId == 611 || weatherId == 612 || weatherId == 613)
     {
-      return "wi-night-sleet";
+      return "wi-night-alt-sleet";
     }
     if (weatherId == 701 || weatherId == 741)
     {
@@ -513,7 +512,7 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     }
     if (weatherId == 721)
     {
-      return "wi-night-haze";
+      return "wi-night-alt-haze";
     }
     if (weatherId == 731 || weatherId == 751 || weatherId == 761 || weatherId == 762)
     {
@@ -521,7 +520,7 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     }
     if (weatherId == 771) // Sturmböen
     {
-      return "wi-night-cloudy-gusts";
+      return "wi-night-alt-cloudy-gusts";
     }
     if (weatherId == 781)
     {
@@ -531,16 +530,16 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     // 800 Clear
     if (weatherId == 800)
     {
-      return "wi-night-clear";
+      return "wi-night-alt-clear";
     }
     // 80x Clouds
     if (weatherId == 801 || weatherId == 802)
     {
-      return "wi-night-cloudy";
+      return "wi-night-alt-cloudy";
     }
     if (weatherId == 803)
     {
-      return "wi-night-cloudy-high";
+      return "wi-night-alt-cloudy-high";
     }
     if (weatherId == 804)
     {

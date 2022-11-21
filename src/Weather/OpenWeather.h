@@ -46,10 +46,6 @@ typedef struct OpenWeatherMapOneCallCurrentData
   float dew_point;
   // "uvi": 4.5
   float uvi;
-  // "rain": 5.97
-  float rain;
-  // "snow":	0.15
-  float snow;
   // "clouds": 0
   uint8_t clouds;
   // visibility: 10000
@@ -98,6 +94,10 @@ typedef struct OpenWeatherMapOneCallHourlyData
   String weatherDescription;
   // "icon": "09d"
   String weatherIcon;
+  // "rain": 5.97
+  float rain;
+  // "pop":	0.15
+  float pop;
 
 } OpenWeatherMapOneCallHourlyData;
 
