@@ -21,9 +21,8 @@ DrawWeather::DrawWeather()
   Serial.println("[Weather]: loaded data");
 }
 
-bool DrawWeather::isNight()
+bool DrawWeather::isNight(u_int32_t now)
 {
-  auto now = this->data.current.dt;
   auto sunrise = this->data.current.sunrise;
   auto sunset = this->data.current.sunset;
 
@@ -40,7 +39,7 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
 
   displayStart();
 
-  auto png = getPngForWeatherId(this->data.current.weatherId, this->isNight());
+  auto png = getPngForWeatherId(this->data.current.weatherId, this->isNight(this->data.current.dt));
 
   display.sdCardInit();
 
@@ -139,7 +138,7 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.printf("%.0i hPa", this->data.current.pressure);
 
   display.setCursor(x + secondColumn, startY + 65 * 0);
-  display.printf("%.1f", this->data.current.uvi);
+  display.printf("%.1f", this->data.daily[0].uvi);
 
   display.setCursor(x + firstColumn, startY + 65 * 1);
   display.printf("%.0f km/h", abs(this->data.current.windSpeed * 3.6));
@@ -154,10 +153,10 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   display.print(timeFromUnixString(this->data.current.sunset));
 
   display.setCursor(x + firstColumn, startY + 65 * 3);
-  display.printf("%.1f mm", abs(this->data.hourly[0].rain));
+  display.printf("%.1f mm", abs(this->data.daily[0].rain));
 
   display.setCursor(x + secondColumn, startY + 65 * 3);
-  display.printf("%.0f %%", abs(this->data.hourly[0].pop * 100));
+  display.printf("%.0f %%", abs(this->data.daily[0].pop * 100));
 
   // display.drawFastVLine(x + 20, 0, 825, BLACK);
   // display.drawFastVLine(x + 195 + 20, 0, 825, BLACK);
@@ -167,6 +166,88 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
   // display.drawFastHLine(0, 165, 1200, BLACK);
   // display.drawFastHLine(0, 230, 1200, BLACK);
   // display.drawFastHLine(0, 285, 1200, BLACK);
+
+  displayEnd();
+}
+
+void DrawWeather::drawHourForcast(int x = 15, int y = 295)
+{
+
+  displayStart();
+
+  display.sdCardInit();
+
+  display.setFont(&Roboto_40);
+
+  auto firstColumn = 65;
+  auto incrementColumn = 195;
+
+  auto y_internal = y + 40;
+
+  for (auto i = 0; i < 6; i++)
+  {
+    auto index = i * 2 + 1;
+    auto png = getPngForWeatherId(this->data.hourly[index].weatherId, this->isNight(this->data.hourly[index].dt));
+
+    display.drawImage("png/128/" + png + ".png", firstColumn - 10 + incrementColumn * i, y_internal + 55, false);
+
+    display.setCursor(firstColumn + incrementColumn * i, y + 50);
+    display.print(timeFromUnixString(this->data.hourly[index].dt));
+
+    char temp[3];
+    sprintf(temp, "%.0f", this->data.hourly[index].temp);
+
+    auto w2 = getTextWidth(temp);
+
+    // to do draw celcis afterwards
+    display.drawImage("png/64/wi-degrees.png", firstColumn + incrementColumn * i + w2 - 20, y_internal + 151, false);
+    display.setCursor(firstColumn + incrementColumn * i, y_internal + 200);
+    display.print(temp);
+  }
+
+  // display.drawFastHLine(0, y+190, 1200, BLACK);
+
+  displayEnd();
+}
+
+void DrawWeather::drawDayForcast(int x = 15, int y = 555)
+{
+
+  displayStart();
+
+  display.sdCardInit();
+
+  display.setFont(&Roboto_40);
+
+  auto firstColumn = 65;
+  auto incrementColumn = 195;
+
+  for (auto i = 0; i < 6; i++)
+  {
+    auto index = i;
+    auto png = getPngForWeatherId(this->data.daily[index].weatherId, false);
+    display.drawImage("png/128/" + png + ".png", firstColumn - 10 + incrementColumn * i, y + 55, false);
+
+    display.setCursor(firstColumn + incrementColumn * i, y + 50);
+    display.print(getWeekday(this->data.daily[index].dt));
+
+    char minT[5];
+    char maxT[5];
+
+    sprintf(minT, "%.0f", this->data.daily[index].tempMin);
+    sprintf(maxT, "%.0f", this->data.daily[index].tempMax);
+
+    auto w1 = getTextWidth(minT);
+    auto w2 = getTextWidth(maxT);
+
+    // to do draw celcis afterwards
+    display.drawImage("png/64/wi-degrees.png", firstColumn + incrementColumn * i + w2 + w1 - 20, y + 151, false);
+
+    display.setCursor(firstColumn + incrementColumn * i, y + 200);
+    display.printf("%s | %s", minT, maxT);
+  }
+
+  // display.drawFastHLine(0, y+190, 1200, BLACK);
 
   displayEnd();
 }
@@ -183,11 +264,13 @@ void DrawWeather::drawWeather()
   this->drawCurrentWeather();
   this->drawCurrentTemp();
   this->drawCurrentStats();
+  this->drawHourForcast();
+  this->drawDayForcast();
 
   displayStart();
 
   drawHeader();
-  drawDebug();
+  // drawDebug();
   display.display();
 
   displayEnd();

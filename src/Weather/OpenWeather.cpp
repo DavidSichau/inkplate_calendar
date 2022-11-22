@@ -336,6 +336,10 @@ void OpenWeatherMapOneCall::value(String value)
     {
       this->data->daily[dailyItemCounter].uvi = value.toFloat();
     }
+    if (currentKey == "pop")
+    {
+      this->data->daily[dailyItemCounter].pop = value.toFloat();
+    }
 
     if (currentParent.startsWith("/ROOT/daily[]/_obj/temp"))
     {
@@ -439,6 +443,10 @@ void OpenWeatherMapOneCall::endObject()
   }
   if (currentParent == "/ROOT/daily[]/_obj")
   {
+    if (abs(this->data->daily[dailyItemCounter].rain) > 25000.0)
+    {
+      this->data->daily[dailyItemCounter].rain = 0.0;
+    }
     dailyItemCounter++;
   }
   currentKey = "";
@@ -484,7 +492,7 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     }
     if (weatherId == 511 || weatherId == 615 || weatherId == 616 || weatherId == 620)
     {
-      return "wi-day-night-alt-mix";
+      return "wi-night-alt-rain-mix";
     }
     if (weatherId == 313 || weatherId == 520 || weatherId == 521 || weatherId == 522)
     {
@@ -512,7 +520,7 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     }
     if (weatherId == 721)
     {
-      return "wi-night-alt-haze";
+      return "wi-night-fog";
     }
     if (weatherId == 731 || weatherId == 751 || weatherId == 761 || weatherId == 762)
     {
@@ -530,7 +538,7 @@ String getPngForWeatherId(uint16_t weatherId, bool night = false)
     // 800 Clear
     if (weatherId == 800)
     {
-      return "wi-night-alt-clear";
+      return "wi-night-clear";
     }
     // 80x Clouds
     if (weatherId == 801 || weatherId == 802)

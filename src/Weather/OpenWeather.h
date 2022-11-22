@@ -156,6 +156,8 @@ typedef struct OpenWeatherMapOneCallDailyData
   float snow;
   // "uvi": 4.5
   float uvi;
+  // "pop": 0.5
+  float pop;
 
 } OpenWeatherMapOneCallDailyData;
 

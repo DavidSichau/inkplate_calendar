@@ -94,7 +94,6 @@ char timeStringBuf2[6]; // 13:37
 char *timeFromUnixString(uint32_t utc)
 {
     TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
-    time_t t = std::time(0);
     time_t local = tz.toLocal(utc, &tcr);
 
     snprintf(timeStringBuf2, 17, "%02d:%02d", hour(local), minute(local));
@@ -123,8 +122,29 @@ char *composeDateChar2()
     byte dateHour = hour(local);
     byte dateMinute = minute(local);
 
-    // Let's stick with English for now
     sprintf(dateBuf, "%2d %3s %02d:%02d", dateDay, lang_months[1][dateMonth - 1], dateHour, dateMinute);
 
     return dateBuf;
+}
+static const char *lang_day[][7] = {
+
+    // English
+    {"Mo", "Tu", "We", "Th", "Fr", "Sa", "So"},
+
+    // German
+    {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"},
+
+};
+char dayD[2];
+
+char *getWeekday(uint32_t utc)
+{
+    TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
+    time_t local = tz.toLocal(utc, &tcr);
+
+    byte dateDay = weekday(local);
+
+    sprintf(dayD, "%2s", lang_day[1][dateDay - 1]);
+
+    return dayD;
 }
