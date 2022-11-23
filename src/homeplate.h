@@ -56,7 +56,6 @@ void displayInfoScreen();
 // Image
 bool remotePNG(const char *);
 bool drawPngFromBuffer(uint8_t *buff, int32_t len, int x, int y);
-uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock = true);
 void displayStatusMessage(const char *format, ...);
 
 // util
