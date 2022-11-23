@@ -33,8 +33,6 @@ extern uint bootCount, activityCount;
 #define displayStart() xSemaphoreTake(mutexDisplay, portMAX_DELAY)
 #define displayEnd() xSemaphoreGive(mutexDisplay)
 
-#define max(x, y) (((x) >= (y)) ? (x) : (y))
-
 #define WAKE_BUTTON GPIO_NUM_36
 
 #define VERSION __DATE__ ", " __TIME__
@@ -52,18 +50,6 @@ extern uint bootCount, activityCount;
 // for second to ms conversions
 #define SECOND 1000
 
-// WiFi
-void wifiConnectTask();
-void wifiStopTask();
-void waitForWiFi();
-bool getWifIFailed();
-
-// QR
-void displayWiFiQR();
-
-// Weather
-void displayWeather();
-
 // info
 void displayInfoScreen();
 
@@ -72,33 +58,10 @@ bool remotePNG(const char *);
 bool drawPngFromBuffer(uint8_t *buff, int32_t len, int x, int y);
 uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock = true);
 void displayStatusMessage(const char *format, ...);
-void splashScreen();
-
-// Input
-void startMonitoringButtonsTask();
-void checkBootPads();
-
-// Sleep
-#define TIME_TO_SLEEP_SEC (TIME_TO_SLEEP_MIN * 60) // How long ESP32 will be in deep sleep (in seconds)
-#define TIME_TO_QUICK_SLEEP_SEC 5 * 60             // 5 minutes. How long ESP32 will be in deep sleep (in seconds) for short activities
-void startSleep();
-void setSleepDuration(uint32_t sec);
-void gotoSleepNow();
-
-// time
-
-
-// OTA
-void startOTATask();
-void waitForOTA();
 
 // util
 const char *bootReason();
-uint getBatteryPercent(double voltage);
-void printChipInfo();
-void lowBatteryCheck();
 void printDebugStackSpace();
-void displayBatteryWarning();
 void printDebug(const char *s);
 
 // activity
@@ -124,21 +87,9 @@ void delaySleep(uint seconds);
  * Global Settings
  */
 
-// Battery power thresholds
-#define BATTERY_VOLTAGE_HIGH 4.7
-#define BATTERY_VOLTAGE_LOW 3.6
-#define BATTERY_VOLTAGE_WARNING_SLEEP 3.55
-#define BATTERY_PERCENT_WARNING 20
-
-// enable SD card (currently unused)
-#define USE_SDCARD false
 
 // debounce time limit for static activities
 #define MIN_ACTIVITY_RESTART_SECS 5
-
-// network settings
-#define WIFI_TIMEOUT_MS (20 * SECOND)      // 20 second WiFi connection timeout
-#define WIFI_RECOVER_TIME_MS (30 * SECOND) // Wait 30 seconds after a failed connection attempt
 
 // input debounce
 #define DEBOUNCE_DELAY_MS (SECOND / 2)
@@ -147,5 +98,4 @@ void delaySleep(uint seconds);
 #define DEBUG_STACK false
 #define DEBUG_PRINT false
 
-// Sleep
-#define SLEEP_TIMEOUT_SEC 15
+

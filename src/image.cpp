@@ -2,6 +2,7 @@
 #include <libs/pngle/pngle.h>
 #include <utils/time.h>
 
+#define max(x, y) (((x) >= (y)) ? (x) : (y))
 void displayStats()
 {
     displayStart();
@@ -185,44 +186,6 @@ void displayStatusMessage(const char *format, ...)
 
     // text to print over box
     display.print(statusBuffer);
-    display.partialUpdate(sleepBoot);
-    displayEnd();
-    i2cEnd();
-}
-
-void splashScreen()
-{
-    static const char *splashName = "HomePlate";
-    displayStart();
-    display.selectDisplayMode(INKPLATE_1BIT); // testing
-    display.setTextColor(BLACK, WHITE);       // Set text color to black on white
-    display.setFont(&Roboto_128);
-    display.setTextSize(1);
-
-    // Roboto_64, size: 1, center (439, 437)
-    // Roboto_64, size: 2, center (279, 461)
-    // Roboto_128, size: 1, center (285, 461)
-    int16_t x = 285;
-    int16_t y = 461;
-    bool dynamicPlacement = false;
-    if (dynamicPlacement)
-    {
-        // get text size for box
-        int16_t x1, y1;
-        uint16_t w, h;
-        display.getTextBounds(splashName, 100, 100, &x1, &y1, &w, &h);
-        x = (E_INK_WIDTH - w) / 2;
-        y = (E_INK_HEIGHT - h) / 2 + h;
-        Serial.printf("SplashScreen location (%d, %d)\n", x, y);
-    }
-
-    display.setCursor(x, y);
-
-    // text to print over box
-    display.print(splashName);
-    displayEnd();
-    i2cStart();
-    displayStart();
     display.partialUpdate(sleepBoot);
     displayEnd();
     i2cEnd();

@@ -1,4 +1,4 @@
-
+#pragma once
 
 #include "Weather/OpenWeather.h"
 
@@ -24,3 +24,5 @@ public:
 
     void drawWeather();
 };
+
+void displayWeather();

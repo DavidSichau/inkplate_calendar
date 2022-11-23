@@ -6,7 +6,14 @@
 #include <driver/rtc_io.h> //ESP32 library used for deep sleep and RTC wake up pins
 #include <rom/rtc.h>       // Include ESP32 library for RTC (needed for rtc_get_reset_reason() function)
 #include "homeplate.h"
-#include <utils/time.h>
+
+#include "utils/time.h"
+#include "utils/battery.h"
+#include "utils/network.h"
+#include "utils/ota.h"
+#include "utils/input.h"
+
+#include "startup/startup.h"
 
 Inkplate display(INKPLATE_1BIT);
 SemaphoreHandle_t mutexI2C, mutexSPI, mutexDisplay;
@@ -78,19 +85,16 @@ void setup()
     if (!sleepBoot)
         splashScreen();
 
-    if (USE_SDCARD)
+    spiStart();
+    if (display.sdCardInit())
     {
-        spiStart();
-        if (display.sdCardInit())
-        {
-            Serial.println("[SETUP] SD card init OK");
-        }
-        else
-        {
-            Serial.println("[SETUP] SD card init FAILED");
-        }
-        spiEnd();
+        Serial.println("[SETUP] SD card init OK");
     }
+    else
+    {
+        Serial.println("[SETUP] SD card init FAILED");
+    }
+    spiEnd();
 
     Serial.println("[SETUP] starting button task");
     startMonitoringButtonsTask();

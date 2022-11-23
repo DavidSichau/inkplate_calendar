@@ -1,0 +1,3 @@
+void printChipInfo();
+
+void splashScreen();

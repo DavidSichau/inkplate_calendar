@@ -1,5 +1,6 @@
 #include <qrcode.h>
 #include "homeplate.h"
+#include "qr.h"
 
 void renderQR(QRCode qrcode, uint32_t x, uint32_t y, uint32_t size);
 

@@ -3,6 +3,7 @@
 #include "ui.h"
 #include <homeplate.h>
 #include <utils/time.h>
+#include "utils/battery.h"
 
 void drawHeader()
 {

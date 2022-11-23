@@ -5,6 +5,8 @@
 
 #include "utils/time.h"
 #include "utils/timezone_config.h"
+#include "utils/network.h"
+
 #include "homeplate.h"
 
 #define NTP_TASK_PRIORITY 3

@@ -1,4 +1,6 @@
-#include "homeplate.h"
+#include "utils/sleep.h"
+#include "utils/network.h"
+#include "utils/ota.h"
 
 #define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
 #define SLEEP_TASK_PRIORITY 1
@@ -26,7 +28,8 @@ void gotoSleepNow()
     i2cEnd();
 
     // Go to sleep for TIME_TO_SLEEP seconds
-    if (esp_sleep_enable_timer_wakeup(sleepDuration * uS_TO_S_FACTOR) != ESP_OK) {
+    if (esp_sleep_enable_timer_wakeup(sleepDuration * uS_TO_S_FACTOR) != ESP_OK)
+    {
         Serial.printf("[SLEEP] ERROR esp_sleep_enable_timer_wakeup(%u) invalid value", sleepDuration * uS_TO_S_FACTOR);
     }
 
@@ -63,7 +66,7 @@ void checkSleep(void *parameter)
             vTaskDelay(SECOND / portTICK_PERIOD_MS);
         }
 
-         startActivity(NONE);
+        startActivity(NONE);
         waitForOTA(); // dont sleep if there is an OTA being performed
         printDebugStackSpace();
         // i2cStart();

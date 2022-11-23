@@ -1,4 +1,6 @@
+#include <Inkplate.h>
 #include "homeplate.h"
+#include "utils/input.h"
 
 #define INPUT_TASK_PRIORITY 10
 

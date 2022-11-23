@@ -1,4 +1,9 @@
 #include "homeplate.h"
+#include "utils/battery.h"
+#include "utils/sleep.h"
+#include "qr.h"
+#include "utils/ota.h"
+#include "Weather/DrawWeather.h"
 
 #define ACTIVITY_TASK_PRIORITY 4
 
@@ -147,7 +152,7 @@ void startActivitiesTask()
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
-        8192 * 10,              // Stack size
+        8192 * 1,               // Stack size
         NULL,                   // Parameter
         ACTIVITY_TASK_PRIORITY, // Task priority
         NULL                    // Task handle

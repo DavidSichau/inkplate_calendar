@@ -1,7 +1,5 @@
 #include <WiFi.h>
-#include "homeplate.h"
-
-#define WIFI_TASK_PRIORITY 2
+#include "network.h"
 
 // static addresses
 IPAddress ip, gateway, subnet;

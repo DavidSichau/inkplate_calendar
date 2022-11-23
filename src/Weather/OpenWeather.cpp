@@ -25,6 +25,7 @@
 #include <WiFiClient.h>
 #include "Weather/OpenWeather.h"
 #include "homeplate.h"
+#include "utils/network.h"
 
 String PATH_SEPERATOR = "/";
 
@@ -102,12 +103,10 @@ void OpenWeatherMapOneCall::doUpdate(OpenWeatherMapOneCallData *data, String pat
 
 void OpenWeatherMapOneCall::whitespace(char c)
 {
-  Serial.println("whitespace");
 }
 
 void OpenWeatherMapOneCall::startDocument()
 {
-  Serial.println("start document");
   this->hourlyItemCounter = 0;
 }
 
@@ -455,7 +454,6 @@ void OpenWeatherMapOneCall::endObject()
 
 void OpenWeatherMapOneCall::endDocument()
 {
-  Serial.println("end document");
 }
 
 void OpenWeatherMapOneCall::startArray()

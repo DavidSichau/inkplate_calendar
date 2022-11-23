@@ -1,4 +1,3 @@
-#include "WeatherStationFonts.h"
 #include "Weather/OpenWeather.h"
 #include "Weather/SunMoonCalc.h"
 
@@ -45,8 +44,6 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
 
   auto png = getPngForWeatherId(this->data.current.weatherId, this->isNight(this->data.current.dt));
 
-  display.sdCardInit();
-
   display.drawImage("png/256/" + png + ".png", x + 70, y + 30, false);
 
   auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
@@ -66,8 +63,6 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   sprintf(temp, "%.0f", abs(this->data.current.temp));
   char feelTemp[3];
   sprintf(feelTemp, "%.0f", abs(this->data.current.feels_like));
-
-  display.sdCardInit();
 
   display.setFont(&Roboto_128);
   auto h = getTextHeight(temp);
@@ -111,8 +106,6 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
 {
 
   displayStart();
-
-  display.sdCardInit();
 
   auto startYImg = 35;
 
@@ -179,8 +172,6 @@ void DrawWeather::drawHourForcast(int x = 15, int y = 295)
 
   displayStart();
 
-  display.sdCardInit();
-
   display.setFont(&Roboto_40);
 
   auto firstColumn = 65;
@@ -225,8 +216,6 @@ void DrawWeather::drawDayForcast(int x = 15, int y = 555)
 {
 
   displayStart();
-
-  display.sdCardInit();
 
   display.setFont(&Roboto_40);
 
@@ -284,4 +273,11 @@ void DrawWeather::drawWeather()
   display.display();
 
   displayEnd();
+}
+
+void displayWeather()
+{
+  auto drawWeather = new DrawWeather();
+
+  drawWeather->drawWeather();
 }

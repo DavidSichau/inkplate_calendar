@@ -1,5 +1,6 @@
 #include <ArduinoOTA.h>
-#include "homeplate.h"
+#include "utils/network.h"
+#include "utils/ota.h"
 
 #define OTA_TASK_PRIORITY 2
 
