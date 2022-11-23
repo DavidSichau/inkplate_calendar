@@ -12,6 +12,7 @@
 #include "utils/network.h"
 #include "utils/ota.h"
 #include "utils/input.h"
+#include "utils/sleep.h"
 
 #include "startup/startup.h"
 

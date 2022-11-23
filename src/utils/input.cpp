@@ -1,6 +1,7 @@
 #include <Inkplate.h>
 #include "homeplate.h"
 #include "utils/input.h"
+#include "utils/sleep.h"
 
 #define INPUT_TASK_PRIORITY 10
 

@@ -80,13 +80,10 @@ enum Activity
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();
-void sleepTask();
-void delaySleep(uint seconds);
 
 /*
  * Global Settings
  */
-
 
 // debounce time limit for static activities
 #define MIN_ACTIVITY_RESTART_SECS 5
@@ -97,5 +94,3 @@ void delaySleep(uint seconds);
 // debug settings
 #define DEBUG_STACK false
 #define DEBUG_PRINT false
-
-

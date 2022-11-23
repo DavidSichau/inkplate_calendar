@@ -9,3 +9,5 @@
 void startSleep();
 void setSleepDuration(uint32_t sec);
 void gotoSleepNow();
+void sleepTask();
+void delaySleep(uint seconds);

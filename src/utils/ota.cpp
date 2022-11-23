@@ -1,6 +1,7 @@
 #include <ArduinoOTA.h>
 #include "utils/network.h"
 #include "utils/ota.h"
+#include "utils/sleep.h"
 
 #define OTA_TASK_PRIORITY 2
 
@@ -60,7 +61,7 @@ void startOTATask()
                {
                    Serial.println("\n[OTA] End");
                    displayStatusMessage("OTA Finished");
-                   //otaRunning = false; on finish should restart OTA, going to sleep can interfere.
+                    //otaRunning = false; on finish should restart OTA, going to sleep can interfere.
                 })
         .onProgress([](unsigned int progress, unsigned int total)
                     {
