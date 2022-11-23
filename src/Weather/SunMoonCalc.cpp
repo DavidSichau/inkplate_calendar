@@ -696,7 +696,7 @@ SunMoonCalc::MoonPhase SunMoonCalc::calculateMoonPhase(double lunarAge) const
     if (lunarAge >= 0 && lunarAge <= LUNAR_CYCLE_DAYS && (lunarAge < 1 || lunarAge > LUNAR_CYCLE_DAYS - 1))
     {
         moonPhase.index = 0;
-        moonPhase.icon = "wi-new-alt-moon";
+        moonPhase.icon = "wi-moon-alt-new";
         moonPhase.name = "New Moon";
     }
     else if (lunarAge >= 1 && lunarAge < 6.4)

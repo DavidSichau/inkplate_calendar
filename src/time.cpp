@@ -109,7 +109,7 @@ static const char *lang_months[][12] = {
     {"Jan", "Feb", "Mrz", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"},
 
 };
-char dateBuf[12];
+char dateBuf[7];
 
 char *composeDateChar2()
 {
@@ -119,13 +119,12 @@ char *composeDateChar2()
 
     byte dateDay = day(local);
     byte dateMonth = month(local);
-    byte dateHour = hour(local);
-    byte dateMinute = minute(local);
 
-    sprintf(dateBuf, "%2d %3s %02d:%02d", dateDay, lang_months[1][dateMonth - 1], dateHour, dateMinute);
+    sprintf(dateBuf, "%2d. %3s", dateDay, lang_months[1][dateMonth - 1]);
 
     return dateBuf;
 }
+
 static const char *lang_day[][7] = {
 
     // English
@@ -154,5 +153,5 @@ int getHour(uint32_t utc)
     TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
     time_t local = tz.toLocal(utc, &tcr);
 
-    return  hour(local);
+    return hour(local);
 }

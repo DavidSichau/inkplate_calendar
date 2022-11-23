@@ -51,6 +51,7 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
   auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
   auto sunMoon = smCalc.calculateSunAndMoonData();
 
+  Serial.println("png/64/" + sunMoon.moon.phase.icon + ".png");
   display.drawImage("png/64/" + sunMoon.moon.phase.icon + ".png", x + 10, y + 10, false);
 
   displayEnd();
@@ -85,16 +86,16 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   auto w3 = getTextWidth(intTemp);
 
   display.drawImage("png/128/wi-celsius.png", x + w2 + 40, 207, false);
-  display.drawImage("png/128/wi-celsius.png", x + 240 + w3, 207, false);
+  display.drawImage("png/128/wi-celsius.png", x + 230 + w3, 207, false);
 
   display.drawImage("png/64/wi-thermometer-exterior.png", x + 5, 233, false);
-  display.drawImage("png/64/wi-thermometer-internal.png", x + 195, 233, false);
+  display.drawImage("png/64/wi-thermometer-internal.png", x + 185, 233, false);
 
   display.setCursor(x + 20 + 45, 285);
   display.print(feelTemp);
 
   // move to middle
-  display.setCursor(x + 255, 285);
+  display.setCursor(x + 245, 285);
 
   // TODO get correct temperature and display it with Grad C
   display.print(intTemp);
