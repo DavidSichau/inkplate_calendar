@@ -23,8 +23,11 @@ DrawWeather::DrawWeather()
 
 bool DrawWeather::isNight(u_int32_t now)
 {
-  auto sunrise = this->data.current.sunrise;
-  auto sunset = this->data.current.sunset;
+  auto smCalc = SunMoonCalc(now, OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
+  auto sunMoon = smCalc.calculateSunAndMoonData();
+
+  auto sunrise = sunMoon.sun.rise;
+  auto sunset = sunMoon.sun.set;
 
   if (now > sunrise && now < sunset)
   {
@@ -184,14 +187,22 @@ void DrawWeather::drawHourForcast(int x = 15, int y = 295)
 
   auto y_internal = y + 40;
 
+  auto skipIndex = 0;
+
   for (auto i = 0; i < 6; i++)
   {
-    auto index = i * 2 + 1;
+    auto index = i * 2 + 1 + skipIndex;
+    while (getHour(this->data.hourly[index].dt) > 20 || getHour(this->data.hourly[index].dt) < 7)
+    {
+      skipIndex++;
+      index++;
+    }
+
     auto png = getPngForWeatherId(this->data.hourly[index].weatherId, this->isNight(this->data.hourly[index].dt));
 
     display.drawImage("png/128/" + png + ".png", firstColumn - 10 + incrementColumn * i, y_internal + 55, false);
 
-    display.setCursor(firstColumn + incrementColumn * i, y + 50);
+    display.setCursor(firstColumn + incrementColumn * i, y_internal + 50);
     display.print(timeFromUnixString(this->data.hourly[index].dt));
 
     char temp[3];
@@ -199,13 +210,12 @@ void DrawWeather::drawHourForcast(int x = 15, int y = 295)
 
     auto w2 = getTextWidth(temp);
 
-    // to do draw celcis afterwards
-    display.drawImage("png/64/wi-degrees.png", firstColumn + incrementColumn * i + w2 - 20, y_internal + 151, false);
-    display.setCursor(firstColumn + incrementColumn * i, y_internal + 200);
+    display.drawImage("png/64/wi-celsius.png", firstColumn + 20 + incrementColumn * i + w2 - 12, y_internal + 171, false);
+    display.setCursor(firstColumn + 20 + incrementColumn * i, y_internal + 210);
     display.print(temp);
   }
 
-  // display.drawFastHLine(0, y+190, 1200, BLACK);
+  // display.drawFastHLine(0, y_internal + 210, 1200, BLACK);
 
   displayEnd();
 }
@@ -228,7 +238,7 @@ void DrawWeather::drawDayForcast(int x = 15, int y = 555)
     auto png = getPngForWeatherId(this->data.daily[index].weatherId, false);
     display.drawImage("png/128/" + png + ".png", firstColumn - 10 + incrementColumn * i, y + 55, false);
 
-    display.setCursor(firstColumn + incrementColumn * i, y + 50);
+    display.setCursor(firstColumn + incrementColumn * i + 30, y + 50);
     display.print(getWeekday(this->data.daily[index].dt));
 
     char minT[5];
@@ -240,14 +250,13 @@ void DrawWeather::drawDayForcast(int x = 15, int y = 555)
     auto w1 = getTextWidth(minT);
     auto w2 = getTextWidth(maxT);
 
-    // to do draw celcis afterwards
-    display.drawImage("png/64/wi-degrees.png", firstColumn + incrementColumn * i + w2 + w1 - 20, y + 151, false);
+    display.drawImage("png/64/wi-celsius.png", firstColumn + incrementColumn * i + w2 + w1 + 25, y + 171, false);
 
-    display.setCursor(firstColumn + incrementColumn * i, y + 200);
+    display.setCursor(firstColumn + incrementColumn * i, y + 210);
     display.printf("%s | %s", minT, maxT);
   }
 
-  // display.drawFastHLine(0, y+190, 1200, BLACK);
+  // display.drawFastHLine(0, y + 210, 1200, BLACK);
 
   displayEnd();
 }
@@ -265,7 +274,7 @@ void DrawWeather::drawWeather()
   this->drawCurrentTemp();
   this->drawCurrentStats();
   this->drawHourForcast();
-  this->drawDayForcast();
+  this->drawDayForcast(15, 565);
 
   displayStart();
 

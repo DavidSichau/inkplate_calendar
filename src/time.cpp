@@ -148,3 +148,11 @@ char *getWeekday(uint32_t utc)
 
     return dayD;
 }
+
+int getHour(uint32_t utc)
+{
+    TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
+    time_t local = tz.toLocal(utc, &tcr);
+
+    return  hour(local);
+}
