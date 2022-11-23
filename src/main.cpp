@@ -6,6 +6,7 @@
 #include <driver/rtc_io.h> //ESP32 library used for deep sleep and RTC wake up pins
 #include <rom/rtc.h>       // Include ESP32 library for RTC (needed for rtc_get_reset_reason() function)
 #include "homeplate.h"
+#include <utils/time.h>
 
 Inkplate display(INKPLATE_1BIT);
 SemaphoreHandle_t mutexI2C, mutexSPI, mutexDisplay;

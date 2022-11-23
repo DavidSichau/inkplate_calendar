@@ -26,6 +26,7 @@ This implementation is based on a Java class by T. Alonso Albi from OAN (Spain)
 */
 
 #include "SunMoonCalc.h"
+#include <time.h>
 
 /** Radians to hours. */
 const double RAD_TO_HOUR = 180.0 / (15.0 * PI);

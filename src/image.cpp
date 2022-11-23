@@ -1,5 +1,6 @@
 #include "homeplate.h"
 #include <libs/pngle/pngle.h>
+#include <utils/time.h>
 
 void displayStats()
 {
@@ -17,9 +18,10 @@ void displayStats()
 
 bool remotePNG(const char *url)
 {
-    if (url == NULL) {
-         Serial.print("[IMAGE] ERROR: got null image!");
-         return false;
+    if (url == NULL)
+    {
+        Serial.print("[IMAGE] ERROR: got null image!");
+        return false;
     }
     displayStatusMessage("Downloading image...");
     Serial.print("[IMAGE] Downloading image: ");
@@ -78,7 +80,7 @@ bool remotePNG(const char *url)
     displayStart();
     display.display();
     // wait before releasing the i2c bus while the display settles. Helps prevent image fading
-    vTaskDelay(0.25 * SECOND/portTICK_PERIOD_MS);
+    vTaskDelay(0.25 * SECOND / portTICK_PERIOD_MS);
     displayEnd();
     i2cEnd();
     Serial.println("[IMAGE] displaying done.");
@@ -158,7 +160,7 @@ void displayStatusMessage(const char *format, ...)
     i2cStart();
     displayStart();
     display.selectDisplayMode(INKPLATE_1BIT);
-    display.setTextColor(BLACK, WHITE);       // Set text color to black on white
+    display.setTextColor(BLACK, WHITE); // Set text color to black on white
     display.setFont(&Roboto_16);
     display.setTextSize(1);
 
@@ -175,7 +177,7 @@ void displayStatusMessage(const char *format, ...)
 
     // background box to set internal buffer colors
     display.fillRect(x - pad, y - pad - h, max(w + (pad * 2), statusWidth), h + (pad * 2), WHITE);
-    //Serial.printf("fillRect(x:%u, y:%u, w:%u, h:%u)\n", x-pad, y-pad-h, max(w+(pad*2), 400), h+(pad*2));
+    // Serial.printf("fillRect(x:%u, y:%u, w:%u, h:%u)\n", x-pad, y-pad-h, max(w+(pad*2), 400), h+(pad*2));
     display.partialUpdate(sleepBoot);
 
     // display status message
@@ -205,7 +207,7 @@ void splashScreen()
     bool dynamicPlacement = false;
     if (dynamicPlacement)
     {
-        //get text size for box
+        // get text size for box
         int16_t x1, y1;
         uint16_t w, h;
         display.getTextBounds(splashName, 100, 100, &x1, &y1, &w, &h);

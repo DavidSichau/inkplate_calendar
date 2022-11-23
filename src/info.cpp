@@ -1,4 +1,5 @@
 #include "homeplate.h"
+#include <utils/time.h>
 
 #define COL1_NAME_X 1 * (E_INK_WIDTH / 8)
 #define COL1_DATA_X 2 * (E_INK_WIDTH / 8)

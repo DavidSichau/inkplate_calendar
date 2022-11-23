@@ -1,10 +1,12 @@
 #include <NTPClient.h>
 #include <TimeLib.h>
 #include <Timezone.h>
-#include <ctime>
+#include <WiFiUdp.h>
 
+#include "utils/time.h"
+#include "utils/timezone_config.h"
 #include "homeplate.h"
-#include "timezone_config.h"
+
 #define NTP_TASK_PRIORITY 3
 
 bool ntpSynced = false;

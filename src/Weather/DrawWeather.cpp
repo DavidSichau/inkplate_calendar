@@ -9,6 +9,7 @@
 #include "ui/ui.h"
 #include "homeplate.h"
 #include <Timezone.h>
+#include <utils/time.h>
 
 DrawWeather::DrawWeather()
 {
@@ -51,7 +52,6 @@ void DrawWeather::drawCurrentWeather(int x = 15, int y = 35)
   auto smCalc = SunMoonCalc(now(), OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
   auto sunMoon = smCalc.calculateSunAndMoonData();
 
-  Serial.println("png/64/" + sunMoon.moon.phase.icon + ".png");
   display.drawImage("png/64/" + sunMoon.moon.phase.icon + ".png", x + 10, y + 10, false);
 
   displayEnd();
