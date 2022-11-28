@@ -68,6 +68,7 @@ enum Activity
 {
     NONE,
     HomeAssistant,
+    Calendar,
     Weather,
     GuestWifi,
     Info,
@@ -75,7 +76,7 @@ enum Activity
     IMG,
 };
 
-#define DEFAULT_ACTIVITY Weather
+#define DEFAULT_ACTIVITY Calendar
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();

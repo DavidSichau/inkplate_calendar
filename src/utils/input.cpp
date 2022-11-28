@@ -55,7 +55,7 @@ void checkButtons(void *params)
             if (checkPad(PAD1))
             {
                 Serial.printf("[INPUT] touchpad 1\n");
-                startActivity(HomeAssistant);
+                startActivity(Calendar);
                 button = true;
             }
             else if (checkPad(PAD2))

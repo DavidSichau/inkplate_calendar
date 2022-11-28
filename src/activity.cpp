@@ -4,6 +4,7 @@
 #include "qr.h"
 #include "utils/ota.h"
 #include "Weather/DrawWeather.h"
+#include "Calendar/DrawCalendar.h"
 
 #define ACTIVITY_TASK_PRIORITY 4
 
@@ -114,6 +115,17 @@ void runActivities(void *params)
             }
             displayWeather();
             break;
+        case Calendar:
+            delaySleep(15);
+            setSleepDuration(TIME_TO_SLEEP_SEC);
+            // wait for wifi or reset activity
+            if (resetActivity)
+            {
+                Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
+                continue;
+            }
+            displayCalendar();
+            break;
         case GuestWifi:
             // only change activities if necessary
             if (activityCurrent != GuestWifi)
@@ -152,7 +164,7 @@ void startActivitiesTask()
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
-        8192 * 1,               // Stack size
+        8192 * 10,               // Stack size
         NULL,                   // Parameter
         ACTIVITY_TASK_PRIORITY, // Task priority
         NULL                    // Task handle
