@@ -1,12 +1,14 @@
 #pragma once
+#include "Arduino.h"
+#include "Calendar/CalendarData.h"
 
 class DrawCalendar
 {
 private:
-    // CalendarData data;
+    CalendarDataType data;
 
 public:
-    DrawCalendar();
+    DrawCalendar(String path);
 
     void drawCalendar();
 };
