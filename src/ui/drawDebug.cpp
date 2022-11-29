@@ -15,8 +15,6 @@ void drawDebug()
 
     display.drawFastVLine(1185, 0, 815, BLACK);
 
-
-
     display.drawFastHLine(0, 10, 1200, BLACK);
 
     display.drawFastHLine(0, 35, 1200, BLACK);
@@ -24,6 +22,26 @@ void drawDebug()
     display.drawFastHLine(0, 295, 1200, BLACK);
 
     display.drawFastHLine(0, 555, 1200, BLACK);
+
+    display.drawFastHLine(0, 815, 1200, BLACK);
+}
+
+void drawDebugCal()
+{
+
+    Serial.println("Drawing Debug Lines");
+    display.drawFastVLine(10, 0, 815, BLACK);
+
+  
+
+    display.drawFastVLine(15 + 50, 0, 815, BLACK);
+
+    display.drawFastVLine(1185, 0, 815, BLACK);
+
+    
+    display.drawFastHLine(0, 10, 1200, BLACK);
+
+    display.drawFastHLine(0, 35, 1200, BLACK);
 
     display.drawFastHLine(0, 815, 1200, BLACK);
 }

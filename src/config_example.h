@@ -33,7 +33,8 @@
 
 //Calendar
 
-#define CalendarICal ""
+#define CalendarHost ""
+#define CalendarToken ""
 
 // Disables touchpads if they are overly sensitive and result in phantom touch events
 #define TOUCHPAD_ENABLE true

@@ -7,8 +7,12 @@ class DrawCalendar
 private:
     CalendarDataType data;
 
+    void drawGrid();
+
+    uint16_t getYPosForTime(uint8_t hour, uint8_t min);
+
 public:
-    DrawCalendar(String path);
+    DrawCalendar();
 
     void drawCalendar();
 };

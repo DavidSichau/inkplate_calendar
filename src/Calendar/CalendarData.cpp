@@ -40,7 +40,7 @@ void CalendarData::update(CalendarDataType *data, String appId)
 
 String CalendarData::buildPath(String appId)
 {
-  return "?token=" + appId;
+  return "/?token=" + appId;
 }
 
 void CalendarData::doUpdate(CalendarDataType *data, String path)
@@ -105,36 +105,53 @@ void CalendarData::whitespace(char c)
 
 void CalendarData::startDocument()
 {
-  Serial.println("start document");
-
   this->eventItemCounter = 0;
   this->dailyItemCounter = 0;
 }
 
 void CalendarData::key(String key)
 {
-  Serial.println(key);
-
   currentKey = key;
 }
 
 void CalendarData::value(String value)
 {
-  Serial.println(value);
+  if (currentParent.startsWith("/ROOT/daily[]"))
+  {
+    if (currentKey == "summary")
+    {
+      this->data->daily[dailyItemCounter].summary = value;
+    }
+    if (currentKey == "date")
+    {
+      this->data->daily[dailyItemCounter].date = value.toInt();
+    }
+  }
+  if (currentParent.startsWith("/ROOT/events[]"))
+  {
+    if (currentKey == "summary")
+    {
+      this->data->events[eventItemCounter].summary = value;
+    }
+    if (currentKey == "start")
+    {
+      this->data->events[eventItemCounter].start = value.toInt();
+    }
+    if (currentKey == "end")
+    {
+      this->data->events[eventItemCounter].end = value.toInt();
+    }
+  }
 }
 
 void CalendarData::endArray()
 {
-  Serial.println("end array");
-
   currentKey = "";
   currentParent = currentParent.substring(0, currentParent.lastIndexOf(PATH_SEPERATOR_CALENDAR));
 }
 
 void CalendarData::startObject()
 {
-  Serial.println("start object");
-
   if (currentKey == "")
   {
     currentKey = "_obj";
@@ -145,6 +162,14 @@ void CalendarData::startObject()
 void CalendarData::endObject()
 {
 
+  if (currentParent == "/ROOT/daily[]/_obj")
+  {
+    dailyItemCounter++;
+  }
+  if (currentParent == "/ROOT/events[]/_obj")
+  {
+    eventItemCounter++;
+  }
   currentKey = "";
   currentParent = currentParent.substring(0, currentParent.lastIndexOf(PATH_SEPERATOR_CALENDAR));
 }
@@ -155,7 +180,6 @@ void CalendarData::endDocument()
 
 void CalendarData::startArray()
 {
-  Serial.println("start array");
   currentParent += PATH_SEPERATOR_CALENDAR + currentKey + "[]";
   currentKey = "";
 }

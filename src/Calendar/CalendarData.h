@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <JsonListener.h>
 #include <JsonStreamingParser.h>
+#include "config.h"
 
 typedef struct CalendarEvent
 {
@@ -32,7 +33,7 @@ typedef struct CalendarDataType
 class CalendarData : public JsonListener
 {
 private:
-  const String host = "eorpsxm5m46eb2i.m.pipedream.net";
+  const String host = CalendarHost;
   const uint8_t port = 80;
   String currentKey = "ROOT";
   String currentParent;

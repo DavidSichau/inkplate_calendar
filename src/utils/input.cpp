@@ -119,7 +119,7 @@ void checkBootPads()
         if (key & INT_PAD1)
         {
             Serial.println("[INPUT] boot: PAD1");
-            startActivity(HomeAssistant);
+            startActivity(Calendar);
         }
         else if (key & INT_PAD2)
         {

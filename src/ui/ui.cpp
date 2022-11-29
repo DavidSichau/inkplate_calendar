@@ -45,6 +45,24 @@ uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock
     return h;
 }
 
+// returns width
+// y value should be the top of the text location
+uint16_t centerTextY(const char *t, int16_t x, int16_t y1, int16_t y2)
+{
+    // center text
+    int16_t x1b, y1b;
+    uint16_t w, h;
+    // y = n to give plenty of room for text to clear height of screen
+    display.getTextBounds(t, 0, 100, &x1b, &y1b, &w, &h);
+
+    int16_t y = ((y2 - y1) - h) / 2 + y1;
+
+    display.setCursor(x, y + h);
+    display.print(t);
+
+    return w;
+}
+
 uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const char *right, int16_t x1, int16_t x2, int16_t y, bool lock)
 {
     // center text
