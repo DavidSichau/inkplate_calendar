@@ -72,6 +72,13 @@ void setupTimeAndSyncTask()
     }
 }
 
+time_t changeTimeByDay(int dayChange, time_t base)
+{
+    struct tm *tm = localtime(&base);
+    tm->tm_mday += dayChange;
+    return mktime(tm);
+}
+
 char dateStringBuf[17]; // 1990-12-27 13:37
 char *fullDateString()
 {
@@ -129,15 +136,6 @@ char *composeDateChar2()
     return dateBuf;
 }
 
-static const char *lang_day[][7] = {
-
-    // English
-    {"Mo", "Tu", "We", "Th", "Fr", "Sa", "So"},
-
-    // German
-    {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"},
-
-};
 char dayD[2];
 
 char *getWeekday(uint32_t utc)

@@ -23,7 +23,7 @@ uint16_t getTextWidth(const char *t)
 
 // returns height
 // y value should be the top of the text location
-uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock)
+uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y)
 {
     // center text
     int16_t x1b, y1b;
@@ -33,15 +33,9 @@ uint16_t centerTextX(const char *t, int16_t x1, int16_t x2, int16_t y, bool lock
 
     int16_t x = ((x2 - x1) - w) / 2 + x1;
 
-    Serial.println(t);
-    Serial.println(h);
-
-    if (lock)
-        displayStart();
     display.setCursor(x, y + h);
     display.print(t);
-    if (lock)
-        displayEnd();
+
     return h;
 }
 
@@ -63,7 +57,7 @@ uint16_t centerTextY(const char *t, int16_t x, int16_t y1, int16_t y2)
     return w;
 }
 
-uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const char *right, int16_t x1, int16_t x2, int16_t y, bool lock)
+uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const char *right, int16_t x1, int16_t x2, int16_t y)
 {
     // center text
     int16_t x1b, y1b;
@@ -82,8 +76,7 @@ uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const c
 
     delete full_text;
 
-    if (lock)
-        displayStart();
+
     display.setCursor(x1, y + h);
     display.print(left);
     display.setCursor(x, y + h);
@@ -91,7 +84,6 @@ uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const c
 
     display.setCursor(x2 - wr, y + h);
     display.print(right);
-    if (lock)
-        displayEnd();
+
     return h;
 }

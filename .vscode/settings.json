@@ -54,7 +54,11 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "chrono": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "future": "cpp",
+        "variant": "cpp",
+        "bitset": "cpp",
+        "regex": "cpp"
     },
     "editor.fontSize": 16,
     "scm.inputFontSize": 15,

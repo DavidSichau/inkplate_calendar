@@ -9,7 +9,11 @@ private:
 
     void drawGrid();
 
+    void drawDaily();
+
     uint16_t getYPosForTime(uint8_t hour, uint8_t min);
+
+    uint16_t getXPosForWeekday(uint8_t day);
 
 public:
     DrawCalendar();

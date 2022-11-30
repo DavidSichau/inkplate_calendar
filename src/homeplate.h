@@ -10,6 +10,15 @@
 #include "fonts/Roboto_64.h"
 #include "fonts/Roboto_128.h"
 #include "fonts/Roboto_200.h"
+#include "fonts/FreeSans9pt7b.h"
+#include "fonts/FreeSans12pt7b.h"
+#include "fonts/FreeSans18pt7b.h"
+#include "fonts/FreeSans24pt7b.h"
+
+#include "fonts/FreeSansBold9pt7b.h"
+#include "fonts/FreeSansBold12pt7b.h"
+#include "fonts/FreeSansBold18pt7b.h"
+#include "fonts/FreeSansBold24pt7b.h"
 #include "config.h"
 
 // check that config file is correctly set
