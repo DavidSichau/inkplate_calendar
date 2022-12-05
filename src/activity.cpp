@@ -21,13 +21,13 @@ void startActivity(Activity activity)
     static SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
     if (xSemaphoreTake(mutex, (SECOND) / portTICK_PERIOD_MS) == pdTRUE)
     {
-        // dont re-queue HomeAssistant Activity is run within 60 sec and already running
-        if (activity == HomeAssistant && activityCurrent == HomeAssistant && ((millis() - lastActivityTime) / SECOND < 60))
-        {
-            Serial.printf("[ACTIVITY] startActivity(%d) HomeAssistant already running within time limit, skipping\n", activity);
-            xSemaphoreGive(mutex);
-            return;
-        }
+        // // dont re-queue HomeAssistant Activity is run within 60 sec and already running
+        // if (activity == HomeAssistant && activityCurrent == HomeAssistant && ((millis() - lastActivityTime) / SECOND < 60))
+        // {
+        //     Serial.printf("[ACTIVITY] startActivity(%d) HomeAssistant already running within time limit, skipping\n", activity);
+        //     xSemaphoreGive(mutex);
+        //     return;
+        // }
         // insert into queue
         Serial.printf("[ACTIVITY] startActivity(%d) put into queue\n", activity);
         resetActivity = true;
@@ -89,21 +89,21 @@ void runActivities(void *params)
         {
         case NONE:
             break;
-        case HomeAssistant:
-            delaySleep(15);
-            setSleepDuration(TIME_TO_SLEEP_SEC);
-            // wait for wifi or reset activity
-            waitForWiFiOrActivityChange();
-            if (resetActivity)
-            {
-                Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
-                continue;
-            }
-            // get & render hass image
-            delaySleep(20);
-            remotePNG(IMAGE_URL);
-            // delaySleep(10);
-            break;
+        // case HomeAssistant:
+        //     delaySleep(15);
+        //     setSleepDuration(TIME_TO_SLEEP_SEC);
+        //     // wait for wifi or reset activity
+        //     waitForWiFiOrActivityChange();
+        //     if (resetActivity)
+        //     {
+        //         Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
+        //         continue;
+        //     }
+        //     // get & render hass image
+        //     delaySleep(20);
+        //     remotePNG(IMAGE_URL);
+        //     // delaySleep(10);
+        //     break;
         case Weather:
             delaySleep(15);
             setSleepDuration(TIME_TO_SLEEP_SEC);
@@ -138,18 +138,18 @@ void runActivities(void *params)
             setSleepDuration(TIME_TO_QUICK_SLEEP_SEC);
             displayInfoScreen();
             break;
-        case IMG:
-            setSleepDuration(TIME_TO_SLEEP_SEC);
-            waitForWiFiOrActivityChange();
-            if (resetActivity)
-            {
-                Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
-                continue;
-            }
-            // get & render hass image
-            delaySleep(20);
-            remotePNG("TOTO");
-            break;
+        // case IMG:
+        //     setSleepDuration(TIME_TO_SLEEP_SEC);
+        //     waitForWiFiOrActivityChange();
+        //     if (resetActivity)
+        //     {
+        //         Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
+        //         continue;
+        //     }
+        //     // get & render hass image
+        //     delaySleep(20);
+        //     remotePNG("TOTO");
+        //     break;
         default:
             Serial.printf("[ACTIVITY][ERROR] runActivities() unhandled Activity: %d\n", activityNext);
         }
@@ -164,7 +164,7 @@ void startActivitiesTask()
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
-        8192 * 10,               // Stack size
+        8192 * 10,              // Stack size
         NULL,                   // Parameter
         ACTIVITY_TASK_PRIORITY, // Task priority
         NULL                    // Task handle

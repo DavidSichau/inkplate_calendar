@@ -76,13 +76,13 @@ void printDebug(const char *s);
 enum Activity
 {
     NONE,
-    HomeAssistant,
+    // HomeAssistant,
     Calendar,
     Weather,
     GuestWifi,
     Info,
-    Message,
-    IMG,
+    // Message,
+    // IMG,
 };
 
 #define DEFAULT_ACTIVITY Calendar

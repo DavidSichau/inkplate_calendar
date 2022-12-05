@@ -5,6 +5,10 @@
 
 #define INPUT_TASK_PRIORITY 10
 
+RTC_DATA_ATTR unsigned int activity = 1;
+
+RTC_DATA_ATTR int view = 0;
+
 #define INT_PAD1 (1 << (PAD1 - 8)) // 0x04
 #define INT_PAD2 (1 << (PAD2 - 8)) // 0x08
 #define INT_PAD3 (1 << (PAD3 - 8)) // 0x10
@@ -54,25 +58,29 @@ void checkButtons(void *params)
         if (checkPad(PAD1))
         {
             Serial.printf("[INPUT] touchpad 1\n");
-            startActivity(Calendar);
+            view--;
+            startActivity(static_cast<Activity>(activity));
             button = true;
         }
         else if (checkPad(PAD2))
         {
+            activity = (activity + 1) % sizeof(Activity);
             Serial.printf("[INPUT] touchpad 2\n");
-            startActivity(Weather);
+            startActivity(static_cast<Activity>(activity));
             button = true;
         }
         else if (checkPad(PAD3))
         {
+            view++;
             Serial.printf("[INPUT] touchpad 3\n");
-            startActivity(Info);
+            startActivity(static_cast<Activity>(activity));
             button = true;
         }
         else if (!digitalRead(WAKE_BUTTON))
         {
+            activity = 0;
             Serial.printf("[INPUT] wake button\n");
-            startActivity(HomeAssistant);
+            startActivity(DEFAULT_ACTIVITY);
             button = true;
         }
 
@@ -116,18 +124,21 @@ void checkBootPads()
         //  value of pin at time of interrupt
         if (key & INT_PAD1)
         {
+            view--;
             Serial.println("[INPUT] boot: PAD1");
-            startActivity(Calendar);
+            startActivity(static_cast<Activity>(activity));
         }
         else if (key & INT_PAD2)
         {
+            activity = (activity + 1) % sizeof(Activity);
             Serial.println("[INPUT] boot: PAD2");
-            startActivity(Weather);
+            startActivity(static_cast<Activity>(activity));
         }
         else if (key & INT_PAD3)
         {
+            view++;
             Serial.println("[INPUT] boot: PAD3");
-            startActivity(Info);
+            startActivity(static_cast<Activity>(activity));
         }
         Serial.println();
 
