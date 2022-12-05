@@ -7,9 +7,13 @@ class DrawCalendar
 private:
     CalendarDataType data;
 
+    time_t currentTime;
+
     void drawGrid();
 
     void drawDaily();
+
+    void drawEvents();
 
     uint16_t getYPosForTime(uint8_t hour, uint8_t min);
 

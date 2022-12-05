@@ -3,6 +3,7 @@
 #include <JsonListener.h>
 #include <JsonStreamingParser.h>
 #include "config.h"
+#include <vector>
 
 typedef struct CalendarEvent
 {
@@ -26,14 +27,15 @@ typedef struct CalendarEventDaily
 
 typedef struct CalendarDataType
 {
-  CalendarEvent events[50];
-  CalendarEventDaily daily[20];
+  std::vector<CalendarEvent> events;
+  std::vector<CalendarEventDaily> daily;
 } CalendarDataType;
 
 class CalendarData : public JsonListener
 {
 private:
   const String host = CalendarHost;
+  String appId = CalendarToken;
   const uint8_t port = 80;
   String currentKey = "ROOT";
   String currentParent;
@@ -41,15 +43,18 @@ private:
   uint8_t dailyItemCounter = 0;
   uint8_t eventItemCounter = 0;
 
+  CalendarEvent currentEvent;
+  CalendarEventDaily currentDaily;
+
   uint8_t maxDaily = 20;
   uint8_t maxEvents = 50;
 
   void doUpdate(CalendarDataType *data, String path);
-  String buildPath(String appId);
+  String buildPath(time_t time);
 
 public:
   CalendarData();
-  void update(CalendarDataType *data, String appId);
+  void update(CalendarDataType *data, time_t time);
 
   virtual void whitespace(char c);
   virtual void startDocument();

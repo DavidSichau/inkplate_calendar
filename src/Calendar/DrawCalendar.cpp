@@ -11,6 +11,7 @@
 
 #include <TimeLib.h>
 #include "SdFat.h"
+#include <array>
 
 HTTPClient http;
 SdFile file;
@@ -19,7 +20,9 @@ DrawCalendar::DrawCalendar()
 {
     CalendarData *oneCallClient = new CalendarData();
 
-    oneCallClient->update(&this->data, CalendarToken);
+    this->currentTime = getNowL();
+
+    oneCallClient->update(&this->data, this->currentTime);
     delete oneCallClient;
     oneCallClient = nullptr;
     Serial.println("[Calendar]: loaded data");
@@ -34,12 +37,12 @@ uint16_t DrawCalendar::getYPosForTime(uint8_t hour, uint8_t min)
         return start - 20;
     }
 
-    if (hour > 21)
+    if (hour > 22)
     {
         return 825 - 20;
     }
 
-    return start + 40 * (hour - 6);
+    return start + 40 * (hour - 6) + 10 * (min / 15);
 }
 
 uint16_t DrawCalendar::getXPosForWeekday(uint8_t day)
@@ -88,7 +91,7 @@ void DrawCalendar::drawGrid()
 
     for (auto i = 1; i <= 15; i++)
     {
-        display.drawFastHLine(60, 35 + 170 + 40 * i, 1125, BLACK);
+        display.drawFastHLine(60, 35 + 170 + 40 * i, 1125, 6);
         display.setFont(&FreeSans9pt7b);
         char timeStringBuf[6]; // 13:37
         snprintf(timeStringBuf, 6, "%02d:00", 6 + i);
@@ -99,12 +102,71 @@ void DrawCalendar::drawGrid()
 
 void DrawCalendar::drawDaily()
 {
-    for (auto i = 0; i < 20; i++)
+
+    std::array<int, 8> dailyEvents = {};
+
+    for (auto &daily : this->data.daily)
     {
-        auto date = this->data.daily[i].date;
-        auto summary = this->data.daily[i].summary;
-        Serial.println(date);
+
+        auto date = daily.date;
+        auto summary = daily.summary;
+        auto currentDay = getWeekdayL(date);
+
+        dailyEvents[currentDay - 1]++;
+
+        GFXcanvas1 canvas(159, 19); // Create canvas object
+        canvas.drawRoundRect(0, 0, 159, 19, 4, BLACK);
+        canvas.setCursor(5, 9);
+        canvas.setFont(&FreeSans9pt7b);
+        canvas.print(daily.summary);
+        display.drawBitmap(getXPosForWeekday(currentDay - 1) + 1, 120 + dailyEvents[currentDay - 1] * 20, canvas.getBuffer(), 159, 19, BLACK);
+    }
+}
+
+void DrawCalendar::drawEvents()
+{
+
+    auto prevEnd = this->data.events.begin()->end;
+    auto currentIntend = 0;
+    for (auto &events : this->data.events)
+    {
+
+        auto start = events.start;
+        auto end = events.end;
+
+        auto summary = events.summary;
+        auto currentDay = getWeekdayL(start);
+
+        auto eventStartY = this->getYPosForTime(getHour(start), minute(start));
+        auto eventEndY = this->getYPosForTime(getHour(end), minute(end));
+        auto eventLength = eventEndY - eventStartY - 1;
+        auto intend = 0;
+        if (start < prevEnd)
+        {
+            currentIntend += 20;
         }
+        else if (currentIntend != 0)
+        {
+            currentIntend -= 20;
+        }
+
+        GFXcanvas1 canvas(159 - currentIntend, eventLength); // Create canvas object
+        canvas.drawRoundRect(0, 0, 159 - currentIntend, eventLength, 4, BLACK);
+
+        canvas.setTextColor(BLACK);
+        canvas.setCursor(5, 9);
+        canvas.setFont(&FreeSans9pt7b);
+        canvas.setTextWrap(false);
+        canvas.print(events.summary);
+        if (eventLength > 35)
+        {
+            canvas.setCursor(5, 33);
+            canvas.printf("%02d:%02d - %02d:%02d", getHour(start), minute(start), getHour(end), minute(end));
+        }
+        display.fillRoundRect(getXPosForWeekday(currentDay - 1) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, 6); // 7 white
+        display.drawBitmap(getXPosForWeekday(currentDay - 1) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);
+        prevEnd = end;
+    }
 }
 
 void DrawCalendar::drawCalendar()
@@ -116,8 +178,7 @@ void DrawCalendar::drawCalendar()
 
     this->drawGrid();
     this->drawDaily();
-
-    Serial.println(this->data.daily[0].summary);
+    this->drawEvents();
 
     displayEnd();
 

@@ -33,14 +33,14 @@ CalendarData::CalendarData()
 {
 }
 
-void CalendarData::update(CalendarDataType *data, String appId)
+void CalendarData::update(CalendarDataType *data, time_t time)
 {
-  doUpdate(data, buildPath(appId));
+  doUpdate(data, buildPath(time));
 }
 
-String CalendarData::buildPath(String appId)
+String CalendarData::buildPath(time_t time)
 {
-  return "/?token=" + appId;
+  return "/?token=" + this->appId + "&time=" + time;
 }
 
 void CalendarData::doUpdate(CalendarDataType *data, String path)
@@ -120,26 +120,30 @@ void CalendarData::value(String value)
   {
     if (currentKey == "summary")
     {
-      this->data->daily[dailyItemCounter].summary = value;
+      // this->data->daily[dailyItemCounter].summary = value;
+      this->currentDaily.summary = value;
     }
     if (currentKey == "date")
     {
-      this->data->daily[dailyItemCounter].date = value.toInt();
+      this->currentDaily.date = value.toInt();
     }
   }
   if (currentParent.startsWith("/ROOT/events[]"))
   {
     if (currentKey == "summary")
     {
-      this->data->events[eventItemCounter].summary = value;
+      // this->data->events[eventItemCounter].summary = value;
+      this->currentEvent.summary = value;
     }
     if (currentKey == "start")
     {
-      this->data->events[eventItemCounter].start = value.toInt();
+      // this->data->events[eventItemCounter].start = value.toInt();
+      this->currentEvent.start = value.toInt();
     }
     if (currentKey == "end")
     {
-      this->data->events[eventItemCounter].end = value.toInt();
+      // this->data->events[eventItemCounter].end = value.toInt();
+      this->currentEvent.end = value.toInt();
     }
   }
 }
@@ -157,6 +161,8 @@ void CalendarData::startObject()
     currentKey = "_obj";
   }
   currentParent += PATH_SEPERATOR_CALENDAR + currentKey;
+  this->currentDaily = {};
+  this->currentEvent = {};
 }
 
 void CalendarData::endObject()
@@ -165,17 +171,25 @@ void CalendarData::endObject()
   if (currentParent == "/ROOT/daily[]/_obj")
   {
     dailyItemCounter++;
+    this->data->daily.push_back(this->currentDaily);
   }
   if (currentParent == "/ROOT/events[]/_obj")
   {
     eventItemCounter++;
+    this->data->events.push_back(this->currentEvent);
   }
   currentKey = "";
   currentParent = currentParent.substring(0, currentParent.lastIndexOf(PATH_SEPERATOR_CALENDAR));
 }
 
+bool compareEvents(CalendarEvent i1, CalendarEvent i2)
+{
+  return (i1.start < i2.start);
+}
+
 void CalendarData::endDocument()
 {
+  std::sort(this->data->events.begin(), this->data->events.end(), compareEvents);
 }
 
 void CalendarData::startArray()

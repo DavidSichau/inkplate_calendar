@@ -157,3 +157,22 @@ int getHour(uint32_t utc)
 
     return hour(local);
 }
+
+int getWeekdayL(uint32_t utc)
+{
+    TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
+    time_t local = tz.toLocal(utc, &tcr);
+    auto w = weekday(local);
+    if (w == 1)
+    {
+        return 7;
+    }
+    return w - 1;
+}
+
+int getNowL()
+{
+    TimeChangeRule *tcr; // pointer to the time change rule, use to get TZ abbrev
+    time_t utc = now();
+    return tz.toLocal(utc, &tcr);
+}

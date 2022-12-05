@@ -18,6 +18,10 @@ char *timeFromUnixString(uint32_t utc);
 
 int getHour(uint32_t utc);
 
+int getWeekdayL(uint32_t utc);
+
+int getNowL();
+
 static const char *lang_day[][7] = {
 
     // English

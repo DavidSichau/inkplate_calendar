@@ -76,7 +76,6 @@ uint16_t centerTextLeftMiddleRight(const char *left, const char *middle, const c
 
     delete full_text;
 
-
     display.setCursor(x1, y + h);
     display.print(left);
     display.setCursor(x, y + h);
