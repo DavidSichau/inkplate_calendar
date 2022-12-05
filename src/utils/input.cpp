@@ -50,32 +50,30 @@ void checkButtons(void *params)
         printDebug("[INPUT] checking for buttons...");
         i2cStart();
         // check buttons
-        if (TOUCHPAD_ENABLE)
+
+        if (checkPad(PAD1))
         {
-            if (checkPad(PAD1))
-            {
-                Serial.printf("[INPUT] touchpad 1\n");
-                startActivity(Calendar);
-                button = true;
-            }
-            else if (checkPad(PAD2))
-            {
-                Serial.printf("[INPUT] touchpad 2\n");
-                startActivity(Weather);
-                button = true;
-            }
-            else if (checkPad(PAD3))
-            {
-                Serial.printf("[INPUT] touchpad 3\n");
-                startActivity(Info);
-                button = true;
-            }
-            else if (!digitalRead(WAKE_BUTTON))
-            {
-                Serial.printf("[INPUT] wake button\n");
-                startActivity(HomeAssistant);
-                button = true;
-            }
+            Serial.printf("[INPUT] touchpad 1\n");
+            startActivity(Calendar);
+            button = true;
+        }
+        else if (checkPad(PAD2))
+        {
+            Serial.printf("[INPUT] touchpad 2\n");
+            startActivity(Weather);
+            button = true;
+        }
+        else if (checkPad(PAD3))
+        {
+            Serial.printf("[INPUT] touchpad 3\n");
+            startActivity(Info);
+            button = true;
+        }
+        else if (!digitalRead(WAKE_BUTTON))
+        {
+            Serial.printf("[INPUT] wake button\n");
+            startActivity(HomeAssistant);
+            button = true;
         }
 
         if (button)

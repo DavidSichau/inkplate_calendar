@@ -48,7 +48,7 @@ void setup()
     startActivity(DEFAULT_ACTIVITY);
 
     // check touchpads for wake event, must be done before display.begin()
-    if (sleepBoot && TOUCHPAD_ENABLE)
+    if (sleepBoot)
     {
         Wire.begin(); // this is called again in display.begin(), but it does not appear to be an issue...
         checkBootPads();
