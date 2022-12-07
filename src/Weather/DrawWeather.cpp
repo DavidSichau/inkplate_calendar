@@ -255,6 +255,7 @@ void DrawWeather::drawWeather()
 {
   displayStart();
 
+  display.clearDisplay();
   display.selectDisplayMode(INKPLATE_3BIT);
   display.setTextColor(BLACK, WHITE); // Set text color to black on white
 
