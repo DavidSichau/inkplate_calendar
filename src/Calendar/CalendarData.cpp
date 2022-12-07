@@ -26,6 +26,9 @@
 #include "Calendar/CalendarData.h"
 #include "homeplate.h"
 #include "utils/network.h"
+#define FS_NO_GLOBALS
+#include "FS.h"
+#include <LittleFS.h>
 
 String PATH_SEPERATOR_CALENDAR = "/";
 
@@ -52,51 +55,28 @@ void CalendarData::doUpdate(CalendarDataType *data, String path)
   this->data = data;
   JsonStreamingParser parser;
   parser.setListener(this);
-  Serial.printf("[HTTP] Requesting resource at http://%s:%u%s\n", host.c_str(), port, path.c_str());
 
-  waitForWiFi();
-  WiFiClient client;
-  if (client.connect(host.c_str(), port))
+  if (!LittleFS.begin())
   {
-    bool isBody = false;
-    char c;
-    Serial.println("[HTTP] connected, now GETting data");
-    client.print("GET " + path + " HTTP/1.1\r\n"
-                                 "Host: " +
-                 host + "\r\n"
-                        "Connection: close\r\n\r\n");
+    Serial.println("An Error has occurred while mounting LittleFS");
+    return;
+  }
 
-    while (client.connected() || client.available())
-    {
-      if (client.available())
-      {
-        if ((millis() - lost_do) > lostTest)
-        {
-          Serial.println("[HTTP] lost in client with a timeout");
-          client.stop();
-          ESP.restart();
-        }
-        c = client.read();
-        if (c == '{' || c == '[')
-        {
-          isBody = true;
-        }
-        if (isBody)
-        {
-          parser.parse(c);
-        }
-      }
-      // give WiFi and TCP/IP libraries a chance to handle pending events
-      yield();
-    }
-    client.stop();
-  }
-  else
+  fs::File file = LittleFS.open("/calendar.json", "r");
+  if (!file)
   {
-    Serial.println("[HTTP] failed to connect to host");
+    Serial.println("Failed to open file for reading");
+    return;
   }
+  Serial.println("File Content:");
+  while (file.available())
+  {
+    parser.parse(file.read());
+  }
+  file.close();
+
   this->data = nullptr;
-  Serial.println("[Calendar] finished updating weather");
+  Serial.println("[Calendar] finished loading data");
 }
 
 void CalendarData::whitespace(char c)

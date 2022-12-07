@@ -10,11 +10,9 @@
 #include "utils/time.h"
 
 #include <TimeLib.h>
-#include "SdFat.h"
 #include <array>
 
 HTTPClient http;
-SdFile file;
 
 DrawCalendar::DrawCalendar()
 {

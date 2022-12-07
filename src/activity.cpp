@@ -4,6 +4,7 @@
 #include "qr.h"
 #include "utils/ota.h"
 #include "Weather/DrawWeather.h"
+#include "Network/loadData.h"
 #include "Calendar/DrawCalendar.h"
 
 #define ACTIVITY_TASK_PRIORITY 4
@@ -21,13 +22,13 @@ void startActivity(Activity activity)
     static SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
     if (xSemaphoreTake(mutex, (SECOND) / portTICK_PERIOD_MS) == pdTRUE)
     {
-        // // dont re-queue HomeAssistant Activity is run within 60 sec and already running
-        // if (activity == HomeAssistant && activityCurrent == HomeAssistant && ((millis() - lastActivityTime) / SECOND < 60))
-        // {
-        //     Serial.printf("[ACTIVITY] startActivity(%d) HomeAssistant already running within time limit, skipping\n", activity);
-        //     xSemaphoreGive(mutex);
-        //     return;
-        // }
+        // dont re-queue HomeAssistant Activity is run within 60 sec and already running
+        if (activity == DataLoading && activityCurrent == DataLoading && ((millis() - lastActivityTime) / SECOND < 60))
+        {
+            Serial.printf("[ACTIVITY] startActivity(%d) DataLoading already running within time limit, skipping\n", activity);
+            xSemaphoreGive(mutex);
+            return;
+        }
         // insert into queue
         Serial.printf("[ACTIVITY] startActivity(%d) put into queue\n", activity);
         resetActivity = true;
@@ -89,21 +90,13 @@ void runActivities(void *params)
         {
         case NONE:
             break;
-        // case HomeAssistant:
-        //     delaySleep(15);
-        //     setSleepDuration(TIME_TO_SLEEP_SEC);
-        //     // wait for wifi or reset activity
-        //     waitForWiFiOrActivityChange();
-        //     if (resetActivity)
-        //     {
-        //         Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
-        //         continue;
-        //     }
-        //     // get & render hass image
-        //     delaySleep(20);
-        //     remotePNG(IMAGE_URL);
-        //     // delaySleep(10);
-        //     break;
+        case DataLoading:
+            delaySleep(15);
+            waitForWiFiOrActivityChange();
+            delaySleep(20);
+            // loadData();
+
+            break;
         case Weather:
             delaySleep(15);
             setSleepDuration(TIME_TO_SLEEP_SEC);
@@ -113,6 +106,9 @@ void runActivities(void *params)
                 Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
                 continue;
             }
+            // waitForDataLoaded();
+            loadData();
+
             displayWeather();
             break;
         case Calendar:
@@ -124,6 +120,8 @@ void runActivities(void *params)
                 Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
                 continue;
             }
+            // waitForDataLoaded();
+            loadData();
             displayCalendar();
             break;
         case GuestWifi:
@@ -164,7 +162,7 @@ void startActivitiesTask()
     xTaskCreate(
         runActivities,
         "ACTIVITY_TASK",        // Task name
-        8192 * 10,              // Stack size
+        8192 * 5,               // Stack size
         NULL,                   // Parameter
         ACTIVITY_TASK_PRIORITY, // Task priority
         NULL                    // Task handle

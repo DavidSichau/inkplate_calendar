@@ -13,6 +13,7 @@
 #include "utils/ota.h"
 #include "utils/input.h"
 #include "utils/sleep.h"
+#include "Network/loadData.h"
 
 #include "startup/startup.h"
 
@@ -45,7 +46,7 @@ void setup()
         printChipInfo();
 
     // must be called before checkPads() so buttons can override pre-boot activity
-    startActivity(DEFAULT_ACTIVITY);
+    startActivity(Weather);
 
     // check touchpads for wake event, must be done before display.begin()
     if (sleepBoot)
@@ -99,6 +100,9 @@ void setup()
 
     Serial.println("[SETUP] starting button task");
     startMonitoringButtonsTask();
+
+    Serial.println("[SETUP] starting data loading task");
+    // startLoadDataTask();
 
     Serial.println("[SETUP] starting time task");
     setupTimeAndSyncTask();
