@@ -197,12 +197,9 @@ private:
   uint8_t allowedHoursCount = 0;
   uint8_t currentForecast;
 
-  void doUpdate(OpenWeatherMapOneCallData *data, String path);
-  String buildPath(String appId, float lat, float lon);
-
 public:
   OpenWeatherMapOneCall();
-  void update(OpenWeatherMapOneCallData *data, String appId, float lat, float lon);
+  void update(OpenWeatherMapOneCallData *data);
 
   void setMetric(boolean metric) { this->metric = metric; }
   boolean isMetric() { return metric; }

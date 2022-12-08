@@ -31,7 +31,7 @@ extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,
                                           signed char *pcTaskName);
 
 extern Inkplate display;
-extern SemaphoreHandle_t mutexI2C, mutexDisplay, mutexSPI;
+extern SemaphoreHandle_t mutexI2C, mutexDisplay, mutexSPI, mutexFS;
 extern bool sleepBoot;
 extern uint bootCount, activityCount;
 
@@ -41,6 +41,8 @@ extern uint bootCount, activityCount;
 #define spiEnd() xSemaphoreGive(mutexSPI)
 #define displayStart() xSemaphoreTake(mutexDisplay, portMAX_DELAY)
 #define displayEnd() xSemaphoreGive(mutexDisplay)
+#define fsStart() xSemaphoreTake(mutexFS, portMAX_DELAY)
+#define fsEnd() xSemaphoreGive(mutexFS)
 
 #define WAKE_BUTTON GPIO_NUM_36
 
@@ -84,7 +86,7 @@ enum Activity
     DataLoading,
 };
 
-#define DEFAULT_ACTIVITY Weather
+#define DEFAULT_ACTIVITY Info
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();

@@ -10,6 +10,7 @@
 
 WiFiClientSecure client;
 boolean isDataLoaded = false;
+xTaskHandle loadDataTaskHandle;
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 
@@ -70,28 +71,13 @@ void downloadFileAndSave(String path, String host, int port, String fileName)
         Serial.println("[HTTPS] failed to connect to host");
     }
     Serial.println("[HTTPS] data loaded");
-
-    // fs::File myFile = LittleFS.open(fileName, FILE_READ);
-
-    // // re-open the file for reading:
-    // if (!myFile)
-    // {
-    //     Serial.print("opening test.txt for read failed");
-    // }
-    // Serial.println("DATA:");
-
-    // // read from the file until there's nothing else in it:`
-    // while (myFile.available())
-    // {
-    //     Serial.write(myFile.read());
-    // }
-    // // close the file:
-    // myFile.close();
 }
 
 void loadData(void *params)
 {
-    spiStart();
+
+    Serial.println("[Load Data Task] started");
+    fsStart();
     auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
     downloadFileAndSave(weatherPath, "api.openweathermap.org", 443, "/weather.json");
 
@@ -99,13 +85,15 @@ void loadData(void *params)
 
     auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
     downloadFileAndSave(calendarPath, CalendarHost, 443, "/calendar.json");
-    isDataLoaded = true;
-    spiEnd();
+    fsEnd();
+    Serial.println("[Load Data Task] ended");
+
+    vTaskDelete(loadDataTaskHandle);
 }
 
 void loadData()
 {
-    spiStart();
+    fsStart();
     auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
     downloadFileAndSave(weatherPath, "api.openweathermap.org", 443, "/weather.json");
 
@@ -114,21 +102,25 @@ void loadData()
     auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
     downloadFileAndSave(calendarPath, CalendarHost, 443, "/calendar.json");
     isDataLoaded = true;
-    spiEnd();
+    fsEnd();
 }
 
 void startLoadDataTask()
 {
+    if (loadDataTaskHandle != NULL)
+    {
+        Serial.printf("[Load Data Task] Task Already running\n");
+        return;
+    }
     // inkplate code needs to be on arduino core or may get i2c errors
     // use mutex for all inkplate code
-    xTaskCreatePinnedToCore(
+    xTaskCreate(
         loadData,         /* Task function. */
         "LOAD_DATA_TASK", /* String with name of task. */
         8192,             /* Stack size */
         NULL,             /* Parameter passed as input of the task */
         20,               /* Priority of the task. */
-        NULL,
-        CONFIG_ARDUINO_RUNNING_CORE);
+        &loadDataTaskHandle);
 }
 
 void waitForDataLoaded()

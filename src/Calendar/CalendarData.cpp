@@ -55,7 +55,7 @@ void CalendarData::doUpdate(CalendarDataType *data, String path)
   this->data = data;
   JsonStreamingParser parser;
   parser.setListener(this);
-
+  fsStart();
   if (!LittleFS.begin())
   {
     Serial.println("An Error has occurred while mounting LittleFS");
@@ -74,7 +74,7 @@ void CalendarData::doUpdate(CalendarDataType *data, String path)
     parser.parse(file.read());
   }
   file.close();
-
+  fsEnd();
   this->data = nullptr;
   Serial.println("[Calendar] finished loading data");
 }

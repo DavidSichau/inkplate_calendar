@@ -94,8 +94,6 @@ void runActivities(void *params)
             delaySleep(15);
             waitForWiFiOrActivityChange();
             delaySleep(20);
-            // loadData();
-
             break;
         case Weather:
             delaySleep(15);
@@ -106,9 +104,6 @@ void runActivities(void *params)
                 Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
                 continue;
             }
-            // waitForDataLoaded();
-            loadData();
-
             displayWeather();
             break;
         case Calendar:
@@ -120,8 +115,6 @@ void runActivities(void *params)
                 Serial.printf("[ACTIVITY][ERROR] Weather Activity reset while waiting, aborting...\n");
                 continue;
             }
-            // waitForDataLoaded();
-            loadData();
             displayCalendar();
             break;
         case GuestWifi:

@@ -59,7 +59,7 @@ void checkButtons(void *params)
         {
             Serial.printf("[INPUT] touchpad 1\n");
             view--;
-            startActivity(static_cast<Activity>(activity));
+            // startActivity(static_cast<Activity>(activity));
             button = true;
         }
         else if (checkPad(PAD2))

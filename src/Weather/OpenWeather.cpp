@@ -37,27 +37,15 @@ OpenWeatherMapOneCall::OpenWeatherMapOneCall()
 {
 }
 
-void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data, String appId, float lat, float lon)
+void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data)
 {
-  doUpdate(data, buildPath(appId, lat, lon));
-}
-
-String OpenWeatherMapOneCall::buildPath(String appId, float lat, float lon)
-{
-  return "/data/2.5/onecall?appid=" + appId + "&lat=" + lat + "&lon=" + lon + "&units=metric&lang=" + language;
-}
-
-void OpenWeatherMapOneCall::doUpdate(OpenWeatherMapOneCallData *data, String path)
-{
-  unsigned long lostTest = 10000UL;
-  unsigned long lost_do = millis();
   this->weatherItemCounter = 0;
   this->hourlyItemCounter = 0;
   this->dailyItemCounter = 0;
   this->data = data;
   JsonStreamingParser parser;
   parser.setListener(this);
-  spiStart();
+  fsStart();
   if (!LittleFS.begin())
   {
     Serial.println("An Error has occurred while mounting LittleFS");
@@ -77,12 +65,13 @@ void OpenWeatherMapOneCall::doUpdate(OpenWeatherMapOneCallData *data, String pat
     parser.parse(c);
   }
   file.close();
-  spiEnd();
+  fsEnd();
 
   Serial.println(this->data->current.weatherDescription);
   this->data = nullptr;
   Serial.println("[Weather] finished updating weather");
 }
+
 
 void OpenWeatherMapOneCall::whitespace(char c)
 {

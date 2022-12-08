@@ -15,7 +15,7 @@ DrawWeather::DrawWeather()
   OpenWeatherMapOneCall *oneCallClient = new OpenWeatherMapOneCall();
   oneCallClient->setLanguage(OPEN_WEATHER_MAP_LANGUAGE);
 
-  oneCallClient->update(&this->data, OPEN_WEATHER_MAP_APP_ID, OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
+  oneCallClient->update(&this->data);
   delete oneCallClient;
   oneCallClient = nullptr;
   Serial.println("[Weather]: loaded data");

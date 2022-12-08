@@ -18,7 +18,7 @@
 #include "startup/startup.h"
 
 Inkplate display(INKPLATE_1BIT);
-SemaphoreHandle_t mutexI2C, mutexSPI, mutexDisplay;
+SemaphoreHandle_t mutexI2C, mutexSPI, mutexDisplay, mutexFS;
 
 bool sleepBoot = false;
 
@@ -38,6 +38,7 @@ void setup()
     mutexI2C = xSemaphoreCreateMutex();
     mutexSPI = xSemaphoreCreateMutex();
     mutexDisplay = xSemaphoreCreateMutex();
+    mutexFS = xSemaphoreCreateMutex();
 
     sleepBoot = (rtc_get_reset_reason(0) == DEEPSLEEP_RESET); // test for deep sleep wake
 
@@ -102,7 +103,7 @@ void setup()
     startMonitoringButtonsTask();
 
     Serial.println("[SETUP] starting data loading task");
-    // startLoadDataTask();
+    startLoadDataTask();
 
     Serial.println("[SETUP] starting time task");
     setupTimeAndSyncTask();
