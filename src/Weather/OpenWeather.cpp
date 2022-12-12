@@ -58,7 +58,7 @@ void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data)
     Serial.println("Failed to open file for reading");
     return;
   }
-  Serial.println("File Content:");
+
   while (file.available())
   {
     char c = file.read();
@@ -67,11 +67,9 @@ void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data)
   file.close();
   fsEnd();
 
-  Serial.println(this->data->current.weatherDescription);
   this->data = nullptr;
   Serial.println("[Weather] finished updating weather");
 }
-
 
 void OpenWeatherMapOneCall::whitespace(char c)
 {

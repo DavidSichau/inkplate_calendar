@@ -9,7 +9,6 @@
 #include <LittleFS.h>
 
 WiFiClientSecure client;
-boolean isDataLoaded = false;
 xTaskHandle loadDataTaskHandle;
 
 #define FORMAT_LITTLEFS_IF_FAILED true
@@ -19,12 +18,6 @@ void downloadFileAndSave(String path, String host, int port, String fileName)
     unsigned long lostTest = 10000UL;
     unsigned long lost_do = millis();
     waitForWiFi();
-
-    if (!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED))
-    {
-        Serial.println("LITTLEFS Mount Failed");
-        return;
-    }
 
     fs::File file = LittleFS.open(fileName, FILE_WRITE);
 
@@ -75,9 +68,15 @@ void downloadFileAndSave(String path, String host, int port, String fileName)
 
 void loadData(void *params)
 {
-
     Serial.println("[Load Data Task] started");
     fsStart();
+
+    if (!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED))
+    {
+        Serial.println("LITTLEFS Mount Failed");
+        return;
+    }
+
     auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
     downloadFileAndSave(weatherPath, "api.openweathermap.org", 443, "/weather.json");
 
@@ -85,24 +84,11 @@ void loadData(void *params)
 
     auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
     downloadFileAndSave(calendarPath, CalendarHost, 443, "/calendar.json");
-    fsEnd();
     Serial.println("[Load Data Task] ended");
 
-    vTaskDelete(loadDataTaskHandle);
-}
-
-void loadData()
-{
-    fsStart();
-    auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
-    downloadFileAndSave(weatherPath, "api.openweathermap.org", 443, "/weather.json");
-
-    auto time = getNowL();
-
-    auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
-    downloadFileAndSave(calendarPath, CalendarHost, 443, "/calendar.json");
-    isDataLoaded = true;
     fsEnd();
+
+    vTaskDelete(loadDataTaskHandle);
 }
 
 void startLoadDataTask()
@@ -121,13 +107,4 @@ void startLoadDataTask()
         NULL,             /* Parameter passed as input of the task */
         20,               /* Priority of the task. */
         &loadDataTaskHandle);
-}
-
-void waitForDataLoaded()
-{
-    while (!isDataLoaded)
-    {
-        Serial.println("WAITING: Data not loaded");
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
-    }
 }
