@@ -1,6 +1,3 @@
+#include <JsonStreamingParser.h>
 
-
-void loadData(void *params);
-
-void startLoadDataTask();
-
+void getData(String path, String host, int port, JsonStreamingParser &parser);

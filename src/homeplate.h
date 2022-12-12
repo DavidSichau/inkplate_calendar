@@ -78,15 +78,13 @@ void printDebug(const char *s);
 enum Activity
 {
     NONE,
-    // HomeAssistant,
     Calendar,
     Weather,
     GuestWifi,
     Info,
-    DataLoading,
 };
 
-#define DEFAULT_ACTIVITY Info
+#define DEFAULT_ACTIVITY Weather
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();

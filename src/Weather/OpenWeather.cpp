@@ -27,9 +27,6 @@
 #include "homeplate.h"
 #include "utils/network.h"
 #include "Network/loadData.h"
-#define FS_NO_GLOBALS
-#include "FS.h"
-#include <LittleFS.h>
 
 String PATH_SEPERATOR = "/";
 
@@ -45,27 +42,9 @@ void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data)
   this->data = data;
   JsonStreamingParser parser;
   parser.setListener(this);
-  fsStart();
-  if (!LittleFS.begin())
-  {
-    Serial.println("An Error has occurred while mounting LittleFS");
-    return;
-  }
 
-  fs::File file = LittleFS.open("/weather.json", "r");
-  if (!file)
-  {
-    Serial.println("Failed to open file for reading");
-    return;
-  }
-
-  while (file.available())
-  {
-    char c = file.read();
-    parser.parse(c);
-  }
-  file.close();
-  fsEnd();
+  auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
+  getData(weatherPath, "api.openweathermap.org", 443, parser);
 
   this->data = nullptr;
   Serial.println("[Weather] finished updating weather");

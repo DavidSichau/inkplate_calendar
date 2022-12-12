@@ -37,6 +37,26 @@ bool checkPad(uint8_t pad)
 
 // TODO use a ring buffer for last 5 touchpad events, and if < some threshold, reboot....
 
+Activity getActivity(int activity)
+{
+    if (activity == 0)
+    {
+        return Weather;
+    }
+    else if (activity == 1)
+    {
+        return Calendar;
+    }
+    else if (activity == 2)
+    {
+        return GuestWifi;
+    }
+    else
+    {
+        return Info;
+    }
+}
+
 void checkButtons(void *params)
 {
     static int lastDebounceTime = 0;
@@ -59,21 +79,21 @@ void checkButtons(void *params)
         {
             Serial.printf("[INPUT] touchpad 1\n");
             view--;
-            // startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
             button = true;
         }
         else if (checkPad(PAD2))
         {
-            activity = (activity + 1) % sizeof(Activity);
+            activity = (activity + 1) % 4;
             Serial.printf("[INPUT] touchpad 2\n");
-            startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
             button = true;
         }
         else if (checkPad(PAD3))
         {
             view++;
             Serial.printf("[INPUT] touchpad 3\n");
-            startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
             button = true;
         }
         else if (!digitalRead(WAKE_BUTTON))

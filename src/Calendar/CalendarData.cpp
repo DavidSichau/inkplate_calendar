@@ -26,9 +26,8 @@
 #include "Calendar/CalendarData.h"
 #include "homeplate.h"
 #include "utils/network.h"
-#define FS_NO_GLOBALS
-#include "FS.h"
-#include <LittleFS.h>
+#include "utils/time.h"
+#include "Network/loadData.h"
 
 String PATH_SEPERATOR_CALENDAR = "/";
 
@@ -55,26 +54,12 @@ void CalendarData::doUpdate(CalendarDataType *data, String path)
   this->data = data;
   JsonStreamingParser parser;
   parser.setListener(this);
-  fsStart();
-  if (!LittleFS.begin())
-  {
-    Serial.println("An Error has occurred while mounting LittleFS");
-    return;
-  }
 
-  fs::File file = LittleFS.open("/calendar.json", "r");
-  if (!file)
-  {
-    Serial.println("Failed to open file for reading");
-    return;
-  }
-  Serial.println("File Content:");
-  while (file.available())
-  {
-    parser.parse(file.read());
-  }
-  file.close();
-  fsEnd();
+  auto time = getNowL();
+
+  auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
+  getData(calendarPath, CalendarHost, 443, parser);
+
   this->data = nullptr;
   Serial.println("[Calendar] finished loading data");
 }
