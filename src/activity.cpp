@@ -23,12 +23,12 @@ void startActivity(Activity activity)
     if (xSemaphoreTake(mutex, (SECOND) / portTICK_PERIOD_MS) == pdTRUE)
     {
         // dont re-queue HomeAssistant Activity is run within 60 sec and already running
-        if (activity == DataLoading && activityCurrent == DataLoading && ((millis() - lastActivityTime) / SECOND < 60))
-        {
-            Serial.printf("[ACTIVITY] startActivity(%d) DataLoading already running within time limit, skipping\n", activity);
-            xSemaphoreGive(mutex);
-            return;
-        }
+        // if (activity == DataLoading && activityCurrent == DataLoading && ((millis() - lastActivityTime) / SECOND < 60))
+        // {
+        //     Serial.printf("[ACTIVITY] startActivity(%d) DataLoading already running within time limit, skipping\n", activity);
+        //     xSemaphoreGive(mutex);
+        //     return;
+        // }
         // insert into queue
         Serial.printf("[ACTIVITY] startActivity(%d) put into queue\n", activity);
         resetActivity = true;
@@ -90,11 +90,6 @@ void runActivities(void *params)
         {
         case NONE:
             break;
-        case DataLoading:
-            delaySleep(15);
-            waitForWiFiOrActivityChange();
-            delaySleep(20);
-            break;
         case Weather:
             delaySleep(15);
             setSleepDuration(TIME_TO_SLEEP_SEC);
@@ -129,18 +124,6 @@ void runActivities(void *params)
             setSleepDuration(TIME_TO_QUICK_SLEEP_SEC);
             displayInfoScreen();
             break;
-        // case IMG:
-        //     setSleepDuration(TIME_TO_SLEEP_SEC);
-        //     waitForWiFiOrActivityChange();
-        //     if (resetActivity)
-        //     {
-        //         Serial.printf("[ACTIVITY][ERROR] HomeAssistant Activity reset while waiting, aborting...\n");
-        //         continue;
-        //     }
-        //     // get & render hass image
-        //     delaySleep(20);
-        //     remotePNG("TOTO");
-        //     break;
         default:
             Serial.printf("[ACTIVITY][ERROR] runActivities() unhandled Activity: %d\n", activityNext);
         }

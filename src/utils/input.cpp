@@ -146,19 +146,19 @@ void checkBootPads()
         {
             view--;
             Serial.println("[INPUT] boot: PAD1");
-            startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
         }
         else if (key & INT_PAD2)
         {
-            activity = (activity + 1) % sizeof(Activity);
+            activity = (activity + 1) % 4;
             Serial.println("[INPUT] boot: PAD2");
-            startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
         }
         else if (key & INT_PAD3)
         {
             view++;
             Serial.println("[INPUT] boot: PAD3");
-            startActivity(static_cast<Activity>(activity));
+            startActivity(getActivity(activity));
         }
         Serial.println();
 

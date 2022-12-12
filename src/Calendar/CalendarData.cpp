@@ -29,10 +29,18 @@
 #include "utils/time.h"
 #include "Network/loadData.h"
 
+extern unsigned int activity;
+
+extern int view;
+
 String PATH_SEPERATOR_CALENDAR = "/";
 
 CalendarData::CalendarData()
 {
+  Serial.println("View:");
+  Serial.println(view);
+  Serial.println("Activity:");
+  Serial.println(activity);
 }
 
 void CalendarData::update(CalendarDataType *data, time_t time)
