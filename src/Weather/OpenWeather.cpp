@@ -43,7 +43,7 @@ void OpenWeatherMapOneCall::update(OpenWeatherMapOneCallData *data)
   JsonStreamingParser parser;
   parser.setListener(this);
 
-  auto weatherPath = "/data/2.5/onecall?appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
+  auto weatherPath = "/data/2.5/onecall?exclude=minutely&appid=" + (String)OPEN_WEATHER_MAP_APP_ID + "&lat=" + OPEN_WEATHER_MAP_LOCATTION_LAT + "&lon=" + OPEN_WEATHER_MAP_LOCATTION_LON + "&units=metric&lang=" + OPEN_WEATHER_MAP_LANGUAGE;
   getData(weatherPath, "api.openweathermap.org", 443, parser);
 
   this->data = nullptr;

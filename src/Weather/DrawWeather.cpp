@@ -10,6 +10,10 @@
 #include <Timezone.h>
 #include <utils/time.h>
 
+#include "SHTC3-SOLDERED.h"
+
+SHTC3 shtcSensor;
+
 DrawWeather::DrawWeather()
 {
   OpenWeatherMapOneCall *oneCallClient = new OpenWeatherMapOneCall();
@@ -19,6 +23,12 @@ DrawWeather::DrawWeather()
   delete oneCallClient;
   oneCallClient = nullptr;
   Serial.println("[Weather]: loaded data");
+
+  shtcSensor.begin();
+  shtcSensor.sample();
+  this->sensorTemperature = shtcSensor.readTempC();
+  this->sensorHumidity = shtcSensor.readHumidity();
+  shtcSensor.sleep();
 }
 
 bool DrawWeather::isNight(u_int32_t now)
@@ -77,7 +87,7 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   auto w2 = getTextWidth(feelTemp);
 
   char intTemp[3];
-  sprintf(intTemp, "%.0d", display.readTemperature());
+  sprintf(intTemp, "%.0f", this->sensorTemperature);
   auto w3 = getTextWidth(intTemp);
 
   display.drawImage("png/128/wi-celsius.png", x + w2 + 40, 207, false);
@@ -109,51 +119,63 @@ void DrawWeather::drawCurrentStats(int x = 795, int y = 35)
 
   auto startYImg = 35;
 
-  display.drawImage("png/64/wi-barometer.png", x, startYImg + 65 * 0, false);
+  auto skip = 55;
 
-  display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + 65 * 0, false);
+  display.drawImage("png/64/wi-barometer.png", x, startYImg + skip * 0, false);
 
-  display.drawImage("png/64/wi-strong-wind.png", x, startYImg + 65 * 1, false);
+  display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + skip * 0, false);
 
-  display.drawImage("png/64/wi-humidity.png", x + 205, startYImg + 65 * 1, false);
+  display.drawImage("png/64/wi-strong-wind.png", x, startYImg + skip * 1, false);
 
-  display.drawImage("png/64/wi-sunrise.png", x, startYImg + 65 * 2, false);
+  display.drawImage("png/64/wi-cloudy.png", x + 205, startYImg + skip * 1, false);
 
-  display.drawImage("png/64/wi-sunset.png", x + 205, startYImg + 65 * 2, false);
+  display.drawImage("png/64/wi-sunrise.png", x, startYImg + skip * 2, false);
 
-  display.drawImage("png/64/wi-raindrops.png", x, startYImg + 65 * 3, false);
+  display.drawImage("png/64/wi-sunset.png", x + 205, startYImg + skip * 2, false);
 
-  display.drawImage("png/64/wi-umbrella.png", x + 205, startYImg + 65 * 3, false);
+  display.drawImage("png/64/wi-raindrops.png", x, startYImg + skip * 3, false);
+
+  display.drawImage("png/64/wi-umbrella.png", x + 205, startYImg + skip * 3, false);
+
+  display.drawImage("png/64/wi-humidity.png", x, startYImg + skip * 4, false);
+
+  display.drawImage("png/64/wi-humidity.png", x + 205, startYImg + skip * 4, false);
 
   display.setFont(&Roboto_32);
 
   auto firstColumn = 65;
   auto secondColumn = 275;
-  auto startY = 85;
+  auto startY = 80;
 
-  display.setCursor(x + firstColumn, startY + 65 * 0);
+  display.setCursor(x + firstColumn, startY + skip * 0);
   display.printf("%.0i hPa", this->data.current.pressure);
 
-  display.setCursor(x + secondColumn, startY + 65 * 0);
+  display.setCursor(x + secondColumn, startY + skip * 0);
   display.printf("%.1f", this->data.daily[0].uvi);
 
-  display.setCursor(x + firstColumn, startY + 65 * 1);
+  display.setCursor(x + firstColumn, startY + skip * 1);
   display.printf("%.0f km/h", abs(this->data.current.windSpeed * 3.6));
 
-  display.setCursor(x + secondColumn, startY + 65 * 1);
-  display.printf("%.0i %%", abs(this->data.current.humidity));
+  display.setCursor(x + secondColumn, startY + skip * 1);
+  display.printf("%.0i %%", this->data.daily[0].clouds);
 
-  display.setCursor(x + firstColumn, startY + 65 * 2);
+  display.setCursor(x + firstColumn, startY + skip * 2);
   display.print(timeFromUnixString(this->data.current.sunrise));
 
-  display.setCursor(x + secondColumn, startY + 65 * 2);
+  display.setCursor(x + secondColumn, startY + skip * 2);
   display.print(timeFromUnixString(this->data.current.sunset));
 
-  display.setCursor(x + firstColumn, startY + 65 * 3);
+  display.setCursor(x + firstColumn, startY + skip * 3);
   display.printf("%.1f mm", abs(this->data.daily[0].rain));
 
-  display.setCursor(x + secondColumn, startY + 65 * 3);
+  display.setCursor(x + secondColumn, startY + skip * 3);
   display.printf("%.0f %%", abs(this->data.daily[0].pop * 100));
+
+  display.setCursor(x + firstColumn, startY + skip * 4);
+  display.printf("%.0i %%", abs(this->data.current.humidity));
+
+  display.setCursor(x + secondColumn, startY + skip * 4);
+  display.printf("%.0f %%", abs(this->sensorHumidity));
 
   // display.drawFastVLine(x + 20, 0, 825, BLACK);
   // display.drawFastVLine(x + 195 + 20, 0, 825, BLACK);

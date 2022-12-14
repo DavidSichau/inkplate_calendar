@@ -7,6 +7,10 @@ class DrawWeather
 private:
     OpenWeatherMapOneCallData data;
 
+    float sensorTemperature;
+
+    float sensorHumidity;
+
     void drawCurrentWeather(int x, int y);
 
     void drawCurrentTemp(int x, int y);
