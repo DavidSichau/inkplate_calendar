@@ -60,9 +60,9 @@ void DrawWeather::drawCurrentTemp(int x = 405, int y = 35)
   displayStart();
 
   char temp[3];
-  sprintf(temp, "%.0f", abs(this->data.current.temp));
+  sprintf(temp, "%.0f", this->data.current.temp);
   char feelTemp[3];
-  sprintf(feelTemp, "%.0f", abs(this->data.current.feels_like));
+  sprintf(feelTemp, "%.0f", this->data.current.feels_like);
 
   display.setFont(&Roboto_128);
   auto h = getTextHeight(temp);
