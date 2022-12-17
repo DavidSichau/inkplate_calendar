@@ -28,6 +28,7 @@
 #include "utils/network.h"
 #include "utils/time.h"
 #include "Network/loadData.h"
+#include <TimeLib.h>
 
 extern unsigned int activity;
 
@@ -37,20 +38,19 @@ String PATH_SEPERATOR_CALENDAR = "/";
 
 CalendarData::CalendarData()
 {
-  Serial.println("View:");
-  Serial.println(view);
-  Serial.println("Activity:");
-  Serial.println(activity);
 }
 
 void CalendarData::update(CalendarDataType *data, time_t time)
 {
-  doUpdate(data, buildPath(time));
+  auto correctWeek = time + view * SECS_PER_WEEK;
+
+  Serial.print(correctWeek);
+  doUpdate(data, buildPath(correctWeek));
 }
 
 String CalendarData::buildPath(time_t time)
 {
-  return "/?token=" + this->appId + "&time=" + time;
+  return "/?token=" + (String)CalendarToken + "&time=" + time;
 }
 
 void CalendarData::doUpdate(CalendarDataType *data, String path)
@@ -63,10 +63,7 @@ void CalendarData::doUpdate(CalendarDataType *data, String path)
   JsonStreamingParser parser;
   parser.setListener(this);
 
-  auto time = getNowL();
-
-  auto calendarPath = "/?token=" + (String)CalendarToken + "&time=" + time;
-  getData(calendarPath, CalendarHost, 443, parser);
+  getData(path, CalendarHost, 443, parser);
 
   this->data = nullptr;
   Serial.println("[Calendar] finished loading data");

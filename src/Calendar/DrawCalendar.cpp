@@ -12,6 +12,8 @@
 #include <TimeLib.h>
 #include <array>
 
+extern int view;
+
 HTTPClient http;
 
 DrawCalendar::DrawCalendar()
@@ -58,7 +60,7 @@ void DrawCalendar::drawGrid()
 
     for (auto i = 0; i < 7; i++)
     {
-        auto current = changeTimeByDay(1 + i, prevSunday);
+        auto current = changeTimeByDay(1 + i, prevSunday) + view * SECS_PER_WEEK;
         auto currentDay = day(current);
         auto today = day();
         display.drawFastVLine(15 + 50 + 160 * i, 105, 720, BLACK);
