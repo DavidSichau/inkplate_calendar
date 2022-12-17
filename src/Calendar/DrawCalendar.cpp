@@ -124,7 +124,7 @@ void DrawCalendar::drawDaily()
 void DrawCalendar::drawEvents()
 {
 
-    auto prevEnd = this->data.events.begin()->end;
+    auto prevEnd = 0;
     auto currentIntend = 0;
     for (auto &events : this->data.events)
     {
@@ -145,7 +145,7 @@ void DrawCalendar::drawEvents()
         }
         else if (currentIntend != 0)
         {
-            currentIntend -= 20;
+            currentIntend = 0;
         }
 
         GFXcanvas1 canvas(159 - currentIntend, eventLength); // Create canvas object
@@ -161,7 +161,7 @@ void DrawCalendar::drawEvents()
             canvas.setCursor(5, 33);
             canvas.printf("%02d:%02d - %02d:%02d", getHour(start), minute(start), getHour(end), minute(end));
         }
-        display.fillRoundRect(getXPosForWeekday(currentDay - 1) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, 6); // 7 white
+        display.fillRoundRect(getXPosForWeekday(currentDay - 1) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, C_GREY_6); // 7 white
         display.drawBitmap(getXPosForWeekday(currentDay - 1) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);
         prevEnd = end;
     }
