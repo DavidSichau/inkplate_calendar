@@ -94,7 +94,7 @@ bool stopActivity();
  */
 
 // debounce time limit for static activities
-#define MIN_ACTIVITY_RESTART_SECS 5
+#define MIN_ACTIVITY_RESTART_SECS 1
 
 // input debounce
 #define DEBOUNCE_DELAY_MS (SECOND / 2)

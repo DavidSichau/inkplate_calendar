@@ -29,7 +29,7 @@ bool checkPad(uint8_t pad)
 {
     if (display.readTouchpad(pad))
     {
-        vTaskDelay(250 / portTICK_PERIOD_MS);
+        vTaskDelay(100 / portTICK_PERIOD_MS);
         return display.readTouchpad(pad);
     }
     return false;
@@ -85,6 +85,7 @@ void checkButtons(void *params)
         else if (checkPad(PAD2))
         {
             activity = (activity + 1) % 4;
+            view = 0;
             Serial.printf("[INPUT] touchpad 2\n");
             startActivity(getActivity(activity));
             button = true;

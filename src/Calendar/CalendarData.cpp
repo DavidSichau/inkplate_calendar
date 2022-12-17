@@ -44,7 +44,6 @@ void CalendarData::update(CalendarDataType *data, time_t time)
 {
   auto correctWeek = time + view * SECS_PER_WEEK;
 
-  Serial.print(correctWeek);
   doUpdate(data, buildPath(correctWeek));
 }
 
