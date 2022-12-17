@@ -84,7 +84,7 @@ enum Activity
     Info,
 };
 
-#define DEFAULT_ACTIVITY Calendar
+#define DEFAULT_ACTIVITY Weather
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();

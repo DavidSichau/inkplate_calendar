@@ -14,7 +14,7 @@ void displayWiFiQR()
     QRCode qrcode;
     uint8_t qrcodeData[qrcode_getBufferSize(version)];
     qrcode_initText(&qrcode, qrcodeData, version, ECC_MEDIUM, buf);
-    uint32_t size = 5;
+    uint32_t size = 3;
 
     uint32_t y = (E_INK_HEIGHT - (qrcode.size * size)) / 2;  // center QR code vertically
     uint32_t x = (E_INK_WIDTH - (qrcode.size * size) - 100); // 100 px padding on right side
