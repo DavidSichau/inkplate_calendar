@@ -1,22 +1,43 @@
 #include "utils/sleep.h"
 #include "utils/network.h"
 #include "utils/ota.h"
+#include "utils/time.h"
+#include <TimeLib.h>
 
 #define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
 #define SLEEP_TASK_PRIORITY 1
 #define TOUCHPAD_WAKE_MASK (int64_t(1) << GPIO_NUM_34)
 
 static unsigned long sleepTime;
-uint32_t sleepDuration = TIME_TO_SLEEP_SEC;
+uint32_t defaultSleepDuration = TIME_TO_SLEEP_SEC;
 
 void setSleepDuration(uint32_t sec)
 {
-    sleepDuration = sec;
+    defaultSleepDuration = sec;
 }
 
 void gotoSleepNow()
 {
     Serial.println("[SLEEP] prepping for sleep");
+
+    auto sleepDuration = defaultSleepDuration;
+
+    auto now = getNowL();
+    // Sleep from 22 until 6 in the morning
+    if (hour(now) >= 22 || hour(now) < 6)
+    {
+        // 6 in the morning
+        auto secondsSkip = SECS_PER_HOUR * 6;
+        if (hour(now) >= 22)
+        {
+            secondsSkip = secondsSkip + SECS_PER_DAY - elapsedSecsToday(now);
+        }
+        else
+        {
+            secondsSkip = secondsSkip - elapsedSecsToday(now);
+        }
+        sleepDuration = secondsSkip;
+    }
 
     i2cStart();
     // disconnect WiFi as it's no longer needed
