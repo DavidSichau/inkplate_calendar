@@ -26,7 +26,7 @@ void printChipInfo()
 
 void splashScreen()
 {
-    static const char *splashName = "HomePlate";
+    static const char *splashName = "HomeView";
     displayStart();
     display.selectDisplayMode(INKPLATE_1BIT); // testing
     display.setTextColor(BLACK, WHITE);       // Set text color to black on white

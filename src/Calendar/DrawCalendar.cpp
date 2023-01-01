@@ -55,13 +55,24 @@ uint16_t DrawCalendar::getXPosForWeekday(uint8_t day)
 
 void DrawCalendar::drawGrid()
 {
-
     auto prevSunday = previousSunday(now());
+    // its sunday
+    if (dayOfWeek(now()) == 1)
+    {
+        // calulate correct sunday
+        prevSunday = previousSunday(now() - SECS_PER_DAY * 2);
+    }
+
+    Serial.println("prev sunday");
+    Serial.println(prevSunday);
 
     for (auto i = 0; i < 7; i++)
     {
         auto current = changeTimeByDay(1 + i, prevSunday) + view * SECS_PER_WEEK;
         auto currentDay = day(current);
+        Serial.println("current day");
+
+        Serial.println(currentDay);
         auto today = day();
         display.drawFastVLine(15 + 50 + 160 * i, 105, 720, BLACK);
         if (today != currentDay)
