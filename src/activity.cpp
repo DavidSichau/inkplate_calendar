@@ -4,6 +4,7 @@
 #include "qr.h"
 #include "utils/ota.h"
 #include "Weather/DrawWeather.h"
+#include "Overview/DrawOverview.h"
 #include "Network/loadData.h"
 #include "Calendar/DrawCalendar.h"
 
@@ -89,6 +90,17 @@ void runActivities(void *params)
         switch (activityNext)
         {
         case NONE:
+            break;
+        case Overview:
+            delaySleep(25);
+            setSleepDuration(TIME_TO_SLEEP_SEC);
+            // wait for wifi or reset activity
+            if (resetActivity)
+            {
+                Serial.printf("[ACTIVITY][ERROR] Overview Activity reset while waiting, aborting...\n");
+                continue;
+            }
+            displayOverview();
             break;
         case Weather:
             delaySleep(15);

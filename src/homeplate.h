@@ -78,13 +78,14 @@ void printDebug(const char *s);
 enum Activity
 {
     NONE,
+    Overview,
     Calendar,
     Weather,
     GuestWifi,
     Info,
 };
 
-#define DEFAULT_ACTIVITY Weather
+#define DEFAULT_ACTIVITY Overview
 void startActivity(Activity activity);
 void startActivitiesTask();
 bool stopActivity();
