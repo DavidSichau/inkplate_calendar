@@ -65,8 +65,6 @@ extern uint bootCount, activityCount;
 void displayInfoScreen();
 
 // Image
-bool remotePNG(const char *);
-bool drawPngFromBuffer(uint8_t *buff, int32_t len, int x, int y);
 void displayStatusMessage(const char *format, ...);
 
 // util
@@ -81,7 +79,6 @@ enum Activity
     Overview,
     Calendar,
     Weather,
-    GuestWifi,
     Info,
 };
 

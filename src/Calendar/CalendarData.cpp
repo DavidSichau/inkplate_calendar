@@ -40,15 +40,19 @@ CalendarData::CalendarData()
 {
 }
 
-void CalendarData::update(CalendarDataType *data, time_t time)
+void CalendarData::update(CalendarDataType *data, time_t time, bool includeNextDay)
 {
   auto correctWeek = time + view * SECS_PER_WEEK;
 
-  doUpdate(data, buildPath(correctWeek));
+  doUpdate(data, buildPath(correctWeek, includeNextDay));
 }
 
-String CalendarData::buildPath(time_t time)
+String CalendarData::buildPath(time_t time, bool includeNextDay)
 {
+  if (includeNextDay)
+  {
+    return "/?token=" + (String)CalendarToken;
+  }
   return "/?token=" + (String)CalendarToken + "&time=" + time;
 }
 

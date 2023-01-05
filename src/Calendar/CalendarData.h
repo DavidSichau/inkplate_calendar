@@ -50,11 +50,11 @@ private:
   uint8_t maxEvents = 50;
 
   void doUpdate(CalendarDataType *data, String path);
-  String buildPath(time_t time);
+  String buildPath(time_t time, bool includeNextDay);
 
 public:
   CalendarData();
-  void update(CalendarDataType *data, time_t time);
+  void update(CalendarDataType *data, time_t time, bool includeNextDay);
 
   virtual void whitespace(char c);
   virtual void startDocument();

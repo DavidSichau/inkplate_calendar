@@ -124,14 +124,6 @@ void runActivities(void *params)
             }
             displayCalendar();
             break;
-        case GuestWifi:
-            // only change activities if necessary
-            if (activityCurrent != GuestWifi)
-            {
-                setSleepDuration(TIME_TO_QUICK_SLEEP_SEC);
-                displayWiFiQR();
-            }
-            break;
         case Info:
             setSleepDuration(TIME_TO_QUICK_SLEEP_SEC);
             displayInfoScreen();

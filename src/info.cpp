@@ -2,6 +2,7 @@
 #include "utils/time.h"
 #include "utils/battery.h"
 #include "ui/ui.h"
+#include "qr.h"
 
 #define COL1_NAME_X 1 * (E_INK_WIDTH / 8)
 #define COL1_DATA_X 2 * (E_INK_WIDTH / 8)
@@ -58,7 +59,7 @@ void displayInfoScreen()
   // Title
   display.setFont(&Roboto_32);
   display.setTextSize(1);
-  uint32_t y = centerTextX("HomePlate Info", 0, E_INK_WIDTH, 100);
+  uint32_t y = centerTextX("HomeView Info", 0, E_INK_WIDTH, 100);
   display.setFont(&Roboto_16);
   // version
   snprintf(buff, 1024, "Version: [%s]", VERSION);
@@ -236,6 +237,8 @@ void displayInfoScreen()
   display.printf("RTC:");
   display.setCursor(COL2_DATA_X, y);
   display.printf(display.rtcIsSet() ? "OK" : "Error");
+
+  displayWiFiQR(600, 700);
 
   displayBoundaryBox();
   display.display();

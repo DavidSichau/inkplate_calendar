@@ -41,7 +41,7 @@ Activity getActivity(int activity)
 {
     if (activity == 0)
     {
-        return Weather;
+        return Overview;
     }
     else if (activity == 1)
     {
@@ -49,7 +49,7 @@ Activity getActivity(int activity)
     }
     else if (activity == 2)
     {
-        return GuestWifi;
+        return Weather;
     }
     else
     {

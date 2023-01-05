@@ -27,7 +27,7 @@ DrawOverview::DrawOverview()
 
   this->currentTime = getNowL();
 
-  calenderDataCall->update(&this->calendarData, this->currentTime);
+  calenderDataCall->update(&this->calendarData, this->currentTime, true);
   delete calenderDataCall;
 
   calenderDataCall = nullptr;
@@ -275,83 +275,6 @@ void DrawOverview::drawCurrentTemp(int x = 395, int y = 35)
   displayEnd();
 }
 
-void DrawOverview::drawCurrentStats(int x = 795, int y = 35)
-{
-
-  displayStart();
-
-  auto startYImg = 35;
-
-  auto skip = 55;
-
-  display.drawImage("png/64/wi-barometer.png", x, startYImg + skip * 0, false);
-
-  display.drawImage("png/64/wi-day-sunny.png", x + 205, startYImg + skip * 0, false);
-
-  display.drawImage("png/64/wi-strong-wind.png", x, startYImg + skip * 1, false);
-
-  display.drawImage("png/64/wi-cloudy.png", x + 205, startYImg + skip * 1, false);
-
-  display.drawImage("png/64/wi-sunrise.png", x, startYImg + skip * 2, false);
-
-  display.drawImage("png/64/wi-sunset.png", x + 205, startYImg + skip * 2, false);
-
-  display.drawImage("png/64/wi-raindrops.png", x, startYImg + skip * 3, false);
-
-  display.drawImage("png/64/wi-umbrella.png", x + 205, startYImg + skip * 3, false);
-
-  display.drawImage("png/64/wi-humidity.png", x, startYImg + skip * 4, false);
-
-  display.drawImage("png/64/wi-humidity.png", x + 205, startYImg + skip * 4, false);
-
-  display.setFont(&Roboto_32);
-
-  auto firstColumn = 65;
-  auto secondColumn = 275;
-  auto startY = 80;
-
-  display.setCursor(x + firstColumn, startY + skip * 0);
-  display.printf("%.0i hPa", this->weatherData.current.pressure);
-
-  display.setCursor(x + secondColumn, startY + skip * 0);
-  display.printf("%.1f", this->weatherData.daily[0].uvi);
-
-  display.setCursor(x + firstColumn, startY + skip * 1);
-  display.printf("%.0f km/h", abs(this->weatherData.current.windSpeed * 3.6));
-
-  display.setCursor(x + secondColumn, startY + skip * 1);
-  display.printf("%.0i %%", this->weatherData.daily[0].clouds);
-
-  display.setCursor(x + firstColumn, startY + skip * 2);
-  display.print(timeFromUnixString(this->weatherData.current.sunrise));
-
-  display.setCursor(x + secondColumn, startY + skip * 2);
-  display.print(timeFromUnixString(this->weatherData.current.sunset));
-
-  display.setCursor(x + firstColumn, startY + skip * 3);
-  display.printf("%.1f mm", abs(this->weatherData.daily[0].rain));
-
-  display.setCursor(x + secondColumn, startY + skip * 3);
-  display.printf("%.0f %%", abs(this->weatherData.daily[0].pop * 100));
-
-  display.setCursor(x + firstColumn, startY + skip * 4);
-  display.printf("%.0i %%", abs(this->weatherData.current.humidity));
-
-  display.setCursor(x + secondColumn, startY + skip * 4);
-  display.printf("%.0f %%", abs(this->sensorHumidity));
-
-  // display.drawFastVLine(x + 20, 0, 825, BLACK);
-  // display.drawFastVLine(x + 195 + 20, 0, 825, BLACK);
-
-  // display.drawFastHLine(0, 100, 1200, BLACK);
-
-  // display.drawFastHLine(0, 165, 1200, BLACK);
-  // display.drawFastHLine(0, 230, 1200, BLACK);
-  // display.drawFastHLine(0, 285, 1200, BLACK);
-
-  displayEnd();
-}
-
 void DrawOverview::drawHourForcast(int x = 15, int y = 295)
 {
 
@@ -443,12 +366,12 @@ void DrawOverview::drawOverview()
   display.clearDisplay();
   display.selectDisplayMode(INKPLATE_3BIT);
   display.setTextColor(BLACK, WHITE); // Set text color to black on white
+  display.clearDisplay();
 
   displayEnd();
 
   this->drawCurrentWeather();
   this->drawCurrentTemp();
-  // this->drawCurrentStats();
   this->drawHourForcast();
   this->drawDayForcast(15, 565);
 
@@ -459,7 +382,6 @@ void DrawOverview::drawOverview()
   displayStart();
 
   drawHeader();
-  // drawDebug();
   display.display();
 
   displayEnd();

@@ -22,7 +22,7 @@ DrawCalendar::DrawCalendar()
 
     this->currentTime = getNowL();
 
-    oneCallClient->update(&this->data, this->currentTime);
+    oneCallClient->update(&this->data, this->currentTime, false);
     delete oneCallClient;
     oneCallClient = nullptr;
     Serial.println("[Calendar]: loaded data");
@@ -63,16 +63,11 @@ void DrawCalendar::drawGrid()
         prevSunday = previousSunday(now() - SECS_PER_DAY * 2);
     }
 
-    Serial.println("prev sunday");
-    Serial.println(prevSunday);
-
     for (auto i = 0; i < 7; i++)
     {
         auto current = changeTimeByDay(1 + i, prevSunday) + view * SECS_PER_WEEK;
         auto currentDay = day(current);
-        Serial.println("current day");
 
-        Serial.println(currentDay);
         auto today = day();
         display.drawFastVLine(15 + 50 + 160 * i, 105, 720, BLACK);
         if (today != currentDay)
