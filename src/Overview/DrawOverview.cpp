@@ -131,7 +131,7 @@ void DrawOverview::drawDaily()
       dailyEvents[0]++;
       display.drawBitmap(getXPosForWeekday(0) + 1, 120 + dailyEvents[0] * 20, canvas.getBuffer(), 159, 19, BLACK);
     }
-    if (day(date) == (day() + 1))
+    if (day(date) == (day() + 1) || day(date) == 1)
     {
       dailyEvents[1]++;
       display.drawBitmap(getXPosForWeekday(1) + 1, 120 + dailyEvents[1] * 20, canvas.getBuffer(), 159, 19, BLACK);
