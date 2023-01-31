@@ -135,8 +135,7 @@ void displayInfoScreen()
   display.printf("%s", bootReason());
   // battery
   y += lineHeight;
-  double voltage = display.readBattery();
-  int percent = getBatteryPercent(voltage);
+  auto[percent, voltage] = readBattery();
   display.setCursor(COL1_NAME_X, y);
   display.printf("Battery:");
   display.setCursor(COL1_DATA_X, y);

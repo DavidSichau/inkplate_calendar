@@ -146,7 +146,6 @@ void DrawOverview::drawEvents()
   auto currentIntend = 0;
   for (auto &events : this->calendarData.events)
   {
-
     auto start = events.start;
     auto end = events.end;
 
@@ -184,7 +183,7 @@ void DrawOverview::drawEvents()
       display.fillRoundRect(getXPosForWeekday(0) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, C_GREY_6); // 7 white
       display.drawBitmap(getXPosForWeekday(0) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);
     }
-    if (day(start) == (day() + 1))
+    if (day(start) == (day() + 1) || day(start) == 1)
     {
       display.fillRoundRect(getXPosForWeekday(1) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, C_GREY_6); // 7 white
       display.drawBitmap(getXPosForWeekday(1) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);

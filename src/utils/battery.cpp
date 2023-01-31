@@ -4,14 +4,27 @@
 
 #include "homeplate.h"
 
-uint getBatteryPercent(double voltage)
+std::tuple<uint, double> readBattery()
 {
+    std::vector<double> voltages;
+    for (int i = 0; i < 3; i++)
+    {
+        auto vol = display.readBattery();
+        vol = roundf(vol * 100) / 100; // rounds to 2 decimal places
+
+        voltages.push_back(vol);
+        delay(50);
+    }
+    std::sort(voltages.begin(), voltages.end());
+
+    auto voltage = voltages[1];
+
     uint percentage = ((voltage - BATTERY_VOLTAGE_LOW) * 100.0) / (BATTERY_VOLTAGE_HIGH - BATTERY_VOLTAGE_LOW);
     if (percentage > 100)
         percentage = 100;
     if (percentage < 0)
         percentage = 0;
-    return percentage;
+    return {percentage, voltage};
 }
 
 void lowBatteryCheck()
@@ -42,8 +55,8 @@ void displayBatteryWarning()
     static const uint8_t buf_size = 30;
     static char statusBuffer[buf_size];
     i2cStart();
-    double voltage = display.readBattery();
-    int percent = getBatteryPercent(voltage);
+
+    auto [percent, voltage] = readBattery();
 
     if (percent > BATTERY_PERCENT_WARNING)
     {

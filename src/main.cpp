@@ -77,12 +77,9 @@ void setup()
     displayStatusMessage("Boot %d %s", bootCount, bootReason());
 
     // print battery state
-    double voltage = 0;
     i2cStart();
-    voltage = display.readBattery();
+    auto [percent, voltage] = readBattery();
     i2cEnd();
-    voltage = roundf(voltage * 100) / 100; // rounds to 2 decimal places
-    int percent = getBatteryPercent(voltage);
     Serial.printf("[SETUP] Battery: %d%% (%.2fv)\n", percent, voltage);
 
     if (!sleepBoot)

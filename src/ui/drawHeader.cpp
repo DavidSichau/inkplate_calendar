@@ -7,9 +7,7 @@
 
 void drawHeader()
 {
-
-    double voltage = display.readBattery();
-    int percent = getBatteryPercent(voltage);
+    auto [percent, voltage] = readBattery();
 
     display.setFont(&Roboto_20);
     const char *date = composeDateChar2();

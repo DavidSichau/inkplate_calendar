@@ -1,4 +1,5 @@
 #include <Inkplate.h>
+#include <tuple>
 
 // Battery power thresholds
 #define BATTERY_VOLTAGE_HIGH 4.55
@@ -6,7 +7,7 @@
 #define BATTERY_VOLTAGE_WARNING_SLEEP 3.55
 #define BATTERY_PERCENT_WARNING 20
 
-uint getBatteryPercent(double voltage);
+std::tuple<uint, double> readBattery();
 
 void lowBatteryCheck();
 
