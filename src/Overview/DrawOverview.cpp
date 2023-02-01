@@ -126,12 +126,12 @@ void DrawOverview::drawDaily()
     canvas.setCursor(5, 9);
     canvas.setFont(&FreeSans9pt7b);
     canvas.print(daily.summary);
-    if (day(date) == day())
+    if (currentDay == getWeekdayL(getNowL()))
     {
       dailyEvents[0]++;
       display.drawBitmap(getXPosForWeekday(0) + 1, 120 + dailyEvents[0] * 20, canvas.getBuffer(), 159, 19, BLACK);
     }
-    if (day(date) == (day() + 1) || day(date) == 1)
+    if (currentDay == (getWeekdayL(changeTimeByDay(1, getNowL()))))
     {
       dailyEvents[1]++;
       display.drawBitmap(getXPosForWeekday(1) + 1, 120 + dailyEvents[1] * 20, canvas.getBuffer(), 159, 19, BLACK);
@@ -178,12 +178,12 @@ void DrawOverview::drawEvents()
       canvas.setCursor(5, 33);
       canvas.printf("%02d:%02d - %02d:%02d", getHour(start), minute(start), getHour(end), minute(end));
     }
-    if (day(start) == day())
+    if (currentDay == getWeekdayL(getNowL()))
     {
       display.fillRoundRect(getXPosForWeekday(0) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, C_GREY_6); // 7 white
       display.drawBitmap(getXPosForWeekday(0) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);
     }
-    if (day(start) == (day() + 1) || day(start) == 1)
+    if (currentDay == (getWeekdayL(changeTimeByDay(1, getNowL()))))
     {
       display.fillRoundRect(getXPosForWeekday(1) + 1 + currentIntend, eventStartY, 159 - currentIntend, eventLength, 4, C_GREY_6); // 7 white
       display.drawBitmap(getXPosForWeekday(1) + 1 + currentIntend, eventStartY, canvas.getBuffer(), 159 - currentIntend, eventLength, BLACK);
