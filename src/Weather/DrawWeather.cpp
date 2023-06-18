@@ -31,15 +31,17 @@ DrawWeather::DrawWeather()
   shtcSensor.sleep();
 }
 
-bool DrawWeather::isNight(u_int32_t now)
+bool DrawWeather::isNight(u_int32_t currentT)
 {
-  auto smCalc = SunMoonCalc(now, OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
+  time_t utc = now();
+
+  auto smCalc = SunMoonCalc(year(utc), month(utc), day(utc), 12, 0, 0, OPEN_WEATHER_MAP_LOCATTION_LAT, OPEN_WEATHER_MAP_LOCATTION_LON);
   auto sunMoon = smCalc.calculateSunAndMoonData();
 
   auto sunrise = sunMoon.sun.rise;
   auto sunset = sunMoon.sun.set;
 
-  if (now > sunrise && now < sunset)
+  if (currentT > sunrise && currentT < sunset)
   {
     return false;
   }

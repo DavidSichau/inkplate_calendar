@@ -64,4 +64,5 @@
     "scm.inputFontSize": 15,
     "debug.console.fontSize": 16,
     "terminal.integrated.fontSize": 16,
+    "cmake.configureOnOpen": false,
 }
